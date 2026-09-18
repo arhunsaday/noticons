@@ -1,0 +1,14 @@
+{
+  "manifest_version": 3,
+  "name": "Notion Icons Plus",
+  "version": "0.1.4",
+  "description": "An offline, searchable icon library for Notion. Brands, developer tools, colorful illustrations and clean UI icons.",
+  "permissions": ["storage"],
+  "background": { "service_worker": "background.js", "type": "module" },
+  "content_scripts": [{
+    "matches": ["https://www.notion.so/*", "https://notion.so/*", "https://app.notion.so/*", "https://www.notion.com/*", "https://notion.com/*", "https://app.notion.com/*"],
+    "js": ["content.js"],
+    "run_at": "document_idle"
+  }],
+  "action": { "default_popup": "popup.html", "default_title": "Notion Icons Plus" }
+}
