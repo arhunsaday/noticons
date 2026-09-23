@@ -1,10 +1,90 @@
 <!doctype html>
-<html lang="en"><meta charset="utf-8"><title>Notion Icons Plus</title>
-<style>body{width:280px;padding:20px;font:14px/1.6 system-ui;color:#292824;background:#faf9f6}h1{font-size:19px;margin:0 0 8px}p{margin:8px 0}small{color:#73716b}button{font:inherit;background:#3f5e47;color:white;border:0;border-radius:7px;padding:8px 14px;cursor:pointer}#status{font-size:12px;color:#a34b3b}</style>
-<h1>Notion Icons Plus ✦</h1>
-<p>Open a page’s icon picker in Notion, then choose <strong>More icons</strong>.</p>
-<p>If the new tab is missing, open the library here:</p>
-<button id="open-library" type="button">Open icon library</button>
-<p id="status" role="status"></p>
-<small>Offline catalog · No account · No tracking<br>Refresh Notion after installing or updating.</small>
-<script src="popup.js"></script></html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Noticon</title>
+<style>
+  :root{
+    color-scheme:light dark;
+    --bg:#fff; --ink:rgb(55,53,47); --muted:rgba(55,53,47,.65); --faint:rgba(55,53,47,.45);
+    --line:rgba(55,53,47,.09); --hover:rgba(55,53,47,.06); --field:rgba(242,241,238,.7);
+    --blue:rgb(35,131,226); --danger:rgb(235,87,87); --inset:rgba(15,15,15,.1);
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --bg:rgb(37,37,37); --ink:rgba(255,255,255,.81); --muted:rgba(255,255,255,.46); --faint:rgba(255,255,255,.28);
+      --line:rgba(255,255,255,.094); --hover:rgba(255,255,255,.055); --field:rgba(255,255,255,.055);
+      --danger:rgb(255,115,105); --inset:rgba(255,255,255,.075);
+    }
+  }
+  *{box-sizing:border-box;margin:0}
+  body{
+    width:288px;background:var(--bg);color:var(--ink);
+    font:14px/1.45 ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI Variable Display","Segoe UI",Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  header{display:flex;align-items:center;gap:9px;padding:16px 16px 12px}
+  header img{width:28px;height:28px;border-radius:7px;display:block}
+  .title{font-size:14px;font-weight:600;letter-spacing:-.1px}
+  .version{font-size:11px;color:var(--faint);font-variant-numeric:tabular-nums}
+  main{padding:0 16px 4px}
+  p{font-size:12.5px;color:var(--muted);margin-bottom:12px}
+  p strong{color:var(--ink);font-weight:500}
+  button{
+    font:inherit;width:100%;height:32px;border:0;border-radius:5px;cursor:pointer;
+    background:var(--blue);color:#fff;font-size:13px;font-weight:500;
+    transition:background .12s ease,opacity .12s ease;
+  }
+  button:hover:not(:disabled){background:rgb(14,113,213)}
+  button:disabled{opacity:.55;cursor:default}
+  button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+  #status{
+    display:none;margin-top:10px;font-size:11.5px;line-height:1.5;color:var(--muted);
+    background:var(--field);border-radius:5px;padding:8px 10px;
+    box-shadow:var(--inset) 0 0 0 1px inset;
+  }
+  #status[data-show=true]{display:block}
+  #status[data-error=true]{color:var(--danger)}
+  .tip{display:flex;align-items:center;gap:7px;margin-top:12px;font-size:11.5px;color:var(--faint)}
+  kbd{
+    font:inherit;font-size:10.5px;background:var(--field);border-radius:4px;padding:2px 5px;
+    box-shadow:var(--inset) 0 0 0 1px inset;color:var(--muted);white-space:nowrap;
+  }
+  footer{
+    display:flex;align-items:center;gap:12px;margin-top:14px;padding:10px 16px 12px;
+    border-top:1px solid var(--line);font-size:11px;
+  }
+  footer a,footer button.link{
+    color:var(--faint);text-decoration:none;background:none;border:0;padding:0;width:auto;height:auto;
+    font-size:11px;font-weight:400;cursor:pointer;
+  }
+  footer a:hover,footer button.link:hover{color:var(--ink);text-decoration:underline}
+  .spacer{margin-left:auto}
+</style>
+</head>
+<body>
+  <header>
+    <img src="icons/icon-48.png" alt="">
+    <div>
+      <div class="title">Noticon</div>
+      <div class="version" id="version"></div>
+    </div>
+  </header>
+
+  <main>
+    <p>Open any page’s icon menu in Notion and pick <strong>More icons</strong>.</p>
+    <button id="open" type="button">Open the icon library</button>
+    <div id="status" role="status" aria-live="polite"></div>
+    <div class="tip">On a Notion page, press <kbd id="shortcut">Alt&nbsp;+&nbsp;Shift&nbsp;+&nbsp;I</kbd></div>
+  </main>
+
+  <footer>
+    <button class="link" id="shortcuts" type="button">Shortcuts</button>
+    <a href="PRIVACY.md" target="_blank" rel="noopener">Privacy</a>
+    <span class="spacer"></span>
+    <span>Offline · no tracking</span>
+  </footer>
+
+  <script src="popup.js"></script>
+</body>
+</html>

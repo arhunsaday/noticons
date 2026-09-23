@@ -1,8 +1,17 @@
+// Notion translates this popup, and detection is label-based, so every locale
+// that is not listed here silently loses the feature. English first, then the
+// languages Notion actually ships a UI for.
 const LABELS = {
-  emoji: /^(emojis?|émoticônes|絵文字|表情符号)$/i,
-  icons: /^(icons?|icônes|symbole|アイコン|图标)$/i,
-  custom: /^(custom|upload|upload image|custom image|personnalisé|personnalisée|importer|カスタム|上传|自定义)$/i
+  emoji: /^(emojis?|émoticônes|emojis?|emoji|絵文字|表情符号|表情符號|이모지|이모티콘)$/i,
+  icons: /^(icons?|icônes|iconos?|ícones?|icone|symbole|アイコン|图标|圖示|아이콘)$/i,
+  custom: /^(custom|custom image|upload|upload image|personnalisé|personnalisée|importer|personalizado|personalizada|subir|carregar|benutzerdefiniert|hochladen|personalizzato|carica|カスタム|アップロード|上传|自定义|自訂|사용자\s?지정|업로드)$/i
 };
+const UPLOAD_IMAGE = /^(upload an image|upload image|upload a file|upload file|choose an image|choose a file|choose file|select an image|select a file|browse|browse files|importer une image|choisir une image|parcourir|subir una imagen|elegir una imagen|carregar imagem|escolher imagem|bild hochladen|datei auswählen|durchsuchen|carica un'immagine|scegli un file|画像をアップロード|ファイルを選択|上传图片|选择文件|選擇檔案|이미지 업로드|파일 선택)$/i;
+// Fallback for labels the exact list has not caught up with. Only ever applied
+// inside the already-identified upload panel, and never to the tab itself.
+const UPLOAD_LOOSE = /\b(upload|choose|select|browse|importer|parcourir|hochladen|auswählen|carica|scegli|subir|elegir|carregar|escolher|アップロード|選択|上传|选择|업로드|선택)\b/i;
+const UPLOAD_TAB = /^(upload|importer|subir|carregar|hochladen|carica|アップロード|上传|업로드)$/i;
+const SAVE = /^(save|enregistrer|guardar|salvar|speichern|salva|保存|저장)$/i;
 const controlSelector = '[role="tab"], [role="button"], button';
 export function label(element) {
   return (element.getAttribute('aria-label') || element.textContent || '').trim();
@@ -50,50 +59,124 @@ export function waitFor(find, timeout = 1600, errorMessage = 'Notion’s upload 
     check();
   });
 }
-export async function uploadToNotion(file, popup) {
+const fileInputs = (root = document) => [...root.querySelectorAll('input[type="file"]')];
+
+function deliver(input, transfer) {
+  input.files = transfer.files;
+  input.dispatchEvent(new Event('input', { bubbles: true }));
+  input.dispatchEvent(new Event('change', { bubbles: true }));
+}
+
+function uploadButton(scope, exclude) {
+  const controls = [...scope.querySelectorAll(controlSelector)].filter(e => e !== exclude && isVisible(e));
+  return controls.find(e => UPLOAD_IMAGE.test(label(e))) || controls.find(e => UPLOAD_LOOSE.test(label(e)));
+}
+
+/**
+ * Last resort, when Notion exposes no file input and no paste target: press its
+ * upload button, and cancel the click it makes on the file input it creates.
+ * Cancelling keeps the operating system's file chooser shut while leaving the
+ * input itself in the DOM, so the file can be handed over directly.
+ */
+async function captureFileInput(button, before) {
+  let captured = null;
+  const intercept = event => {
+    const target = event.target;
+    if (target?.tagName === 'INPUT' && target.type === 'file') {
+      event.preventDefault();
+      captured = target;
+    }
+  };
+  document.addEventListener('click', intercept, true);
+  try {
+    button.click();
+    return await waitFor(() => captured || fileInputs().find(input => !before.has(input)), 1500, '');
+  } catch {
+    return null;
+  } finally {
+    document.removeEventListener('click', intercept, true);
+  }
+}
+
+/**
+ * Hands the PNG to Notion's own upload, and reports what Notion did with it:
+ *
+ *   'saved'   — Notion asked for a confirming Save, and it was clicked.
+ *   'applied' — Notion took the image and closed its icon menu itself.
+ *   'sent'    — the file was delivered, but Notion gave no sign either way.
+ *
+ * The third case is not a failure and not a success. Current Notion applies an
+ * uploaded page icon immediately with no Save button, so demanding one reported
+ * uploads that had in fact worked as errors.
+ */
+export async function uploadToNotion(file, popup, { settleMs = 6000 } = {}) {
   if (!popup?.root.isConnected) throw new Error('Open Notion’s page icon menu first, then try Apply again.');
   const controls = [...popup.root.querySelectorAll(controlSelector)].filter(isVisible);
   const custom = controls.find(e => LABELS.custom.test(label(e)));
-  if (!custom) throw new Error('Cannot find Notion’s custom image tab. Download the PNG and upload it manually.');
+  if (!custom) throw new Error('Cannot find Notion’s upload tab. Download the PNG and upload it manually.');
+
+  const before = new Set(fileInputs());
   custom.click();
+
   const getScope = () => findIconPopup()?.root || popup.root;
-  const uploader = await waitFor(() => {
-    const current = findIconPopup();
-    const scope = current?.root || popup.root;
-    const file = scope.querySelector('input[type="file"]');
-    if (file) return { input: file, scope };
-    const imageButton = [...scope.querySelectorAll(controlSelector)].find(e => /^(upload an image|upload image|importer une image)$/i.test(label(e)) && isVisible(e));
-    if (imageButton) return { pasteTarget: imageButton, scope };
-    // Some Notion versions expose an additional Upload sub-tab.
-    const upload = [...scope.querySelectorAll(controlSelector)].find(e => /^upload$|^importer$/i.test(label(e)) && isVisible(e));
-    if (upload && upload !== custom) upload.click();
-    return null;
-  });
-  const transfer = new DataTransfer();
-  transfer.items.add(file);
-  const findSave = () => [...getScope().querySelectorAll(controlSelector)].find(e => /^(save|enregistrer)$/i.test(label(e)) && isVisible(e));
+  const findSave = () => [...getScope().querySelectorAll(controlSelector)].find(e => SAVE.test(label(e)) && isVisible(e));
   const enabled = e => e && !e.disabled && !e.hasAttribute('disabled') && e.getAttribute('aria-disabled') !== 'true' && getComputedStyle(e).pointerEvents !== 'none';
+
+  // Notion dismisses the icon menu once it has taken the image — by unmounting
+  // it on some builds and by hiding it on others.
+  const dismissed = () => !popup.root.isConnected || !isVisible(popup.root);
+
   const previousSave = findSave();
   if (enabled(previousSave)) throw new Error('Notion already has an unsaved image or link. Cancel that preview and reopen the icon menu before applying a new icon.');
+
+  const uploader = await waitFor(() => {
+    const scope = getScope();
+    const existing = scope.querySelector('input[type="file"]') || fileInputs().find(input => !before.has(input));
+    if (existing) return { input: existing };
+    const button = uploadButton(scope, custom);
+    if (button) return { button };
+    // Some Notion versions put the upload behind a further sub-tab.
+    const sub = [...scope.querySelectorAll(controlSelector)].find(e => e !== custom && UPLOAD_TAB.test(label(e)) && isVisible(e));
+    if (sub) sub.click();
+    return null;
+  });
+
+  const transfer = new DataTransfer();
+  transfer.items.add(file);
+
   if (uploader.input) {
-    uploader.input.files = transfer.files;
-    uploader.input.dispatchEvent(new Event('input', { bubbles: true }));
-    uploader.input.dispatchEvent(new Event('change', { bubbles: true }));
+    deliver(uploader.input, transfer);
   } else {
-    // Current Notion creates its file chooser lazily, sometimes detached from DOM.
-    // The Upload panel explicitly supports pasting images. This event supplies
-    // the selected PNG without reading or replacing the user's real clipboard.
-    uploader.pasteTarget.focus();
-    uploader.pasteTarget.dispatchEvent(new ClipboardEvent('paste', { bubbles: true, cancelable: true, composed: true, clipboardData: transfer }));
+    // The upload panel accepts pasted images, and a paste has no side effects
+    // if Notion ignores it — unlike pressing the button, which can open a file
+    // chooser. So it is tried first, and the button only if it leads nowhere.
+    uploader.button.focus();
+    uploader.button.dispatchEvent(new ClipboardEvent('paste', { bubbles: true, cancelable: true, composed: true, clipboardData: transfer }));
+    const accepted = await waitFor(
+      () => enabled(findSave()) || dismissed() || fileInputs().some(input => input.files?.length),
+      1200, ''
+    ).catch(() => false);
+    if (!accepted) {
+      const captured = await captureFileInput(uploader.button, before);
+      if (captured) deliver(captured, transfer);
+    }
   }
-  if (previousSave || uploader.pasteTarget) {
-    const save = await waitFor(() => {
-      const button = findSave();
-      return enabled(button) ? button : null;
-    }, 10000, 'Notion did not accept the image paste. Download the PNG and use Upload an image instead.');
-    save.click();
+
+  // Notion either asks for a confirming Save, or applies the image and closes
+  // the menu on its own. Handing over a file is not evidence it kept it, so an
+  // absence of both is reported as exactly that, rather than as either.
+  const outcome = await waitFor(() => {
+    const save = findSave();
+    if (enabled(save)) return { save };
+    if (dismissed()) return { closed: true };
+    return null;
+  }, settleMs, '').catch(() => null);
+
+  if (outcome?.save) {
+    outcome.save.click();
+    return 'saved';
   }
-  // Saving is owned by Notion. Dispatching a file is not proof of persistence.
+  return outcome?.closed ? 'applied' : 'sent';
 }
 export async function svgToPng(svg, name) {
   const url = URL.createObjectURL(new Blob([svg], { type: 'image/svg+xml' }));

@@ -41,3 +41,24 @@ test('every search entry generates a valid SVG', () => {
     for (const name of Object.keys(sets[p].data.icons)) assert.match(catalog.icon(`${p}:${name}`), /^<svg/);
   }
 });
+
+test('batch icon lookup answers Saved and Recent in one round trip', () => {
+  const ids = ['lucide:heart', 'logos:react', 'tabler:planet'];
+  const batch = catalog.icons(ids, '#448361');
+  assert.equal(batch.length, 3);
+  assert.deepEqual(batch.map(e => e.id), ids);
+  for (const entry of batch) assert.match(entry.svg, /^<svg/);
+  assert.match(batch[0].svg, /#448361/);
+});
+
+test('a stale saved id is dropped instead of failing the whole batch', () => {
+  const batch = catalog.icons(['lucide:heart', 'lucide:this-icon-was-removed', 'gone:away'], '#37352f');
+  assert.deepEqual(batch.map(e => e.id), ['lucide:heart']);
+  assert.deepEqual(catalog.icons('not-an-array'), []);
+});
+
+test('page-shaped queries reach icons that do not share their name', () => {
+  for (const [query, expected] of [['roadmap', /map|route|flag|milestone/], ['okr', /target|flag|trending|chart/], ['security', /shield|lock|key|fingerprint/]]) {
+    assert.ok(catalog.search({ query }).items.some(e => expected.test(e.id)), `"${query}" found nothing relevant`);
+  }
+});

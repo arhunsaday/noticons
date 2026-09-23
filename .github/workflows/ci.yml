@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Test and build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Test
+        run: npm test
+
+      # The committed PNGs are generated. If the generator and the committed
+      # output disagree, the store icons and the repo have already drifted.
+      - name: Brand assets are up to date
+        run: |
+          npm run brand
+          git diff --exit-code -- extension/icons brand
+
+      - name: Build both browsers
+        run: npm run build
+
+      - name: Package
+        run: node scripts/package.mjs
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: noticon-chrome
+          path: dist
+          retention-days: 14
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: noticon-firefox
+          path: dist-firefox
+          retention-days: 14

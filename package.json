@@ -1,13 +1,25 @@
 {
-  "name": "notion-icons-plus",
-  "version": "0.1.4",
+  "name": "noticon",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
+  "description": "Noticon — 27,000+ offline icons inside Notion's own page-icon menu.",
+  "license": "MIT",
+  "homepage": "https://github.com/arhunsaday/notion-more-icons",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arhunsaday/notion-more-icons.git"
+  },
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
+    "brand": "node scripts/brand.mjs",
     "build": "node scripts/build.mjs",
     "test": "node --test test/*.test.js",
     "dev": "npm run build && node scripts/serve.mjs",
-    "package": "npm run build && node scripts/package.mjs"
+    "package": "npm run build && node scripts/package.mjs",
+    "verify": "npm run brand && npm test && npm run build"
   },
   "dependencies": {
     "@iconify-json/devicon": "1.2.64",

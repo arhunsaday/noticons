@@ -1,101 +1,143 @@
-# Notion Icons Plus
+<div align="center">
+  <img src="brand/logo.svg" width="72" height="72" alt="">
+  <h1>Noticon</h1>
+  <p><strong>27,778 icons, inside Notion's own page-icon menu.</strong><br>
+  Offline. No account. No tracking.</p>
+</div>
 
-A browser extension that adds **More icons** to Notion's page-icon popup.
-27,778 bundled icons across eight sets. Offline fuzzy search, idea synonyms,
-brand/developer and colorful/minimal filters, per-collection filters, ink colors,
-favorites, recents, and transparent 280 × 280 PNG export.
+---
 
-## Install in Chrome / Edge / Brave
+Noticon adds a **More icons** tab next to Notion’s Emojis / Icons / Upload tabs.
+Search 27,778 icons across eight collections, tint the monochrome ones with
+Notion's own colour palette, and click once to apply.
 
-The ready-to-load extension is in `dist/`.
+| | |
+| --- | --- |
+| **Icons** | 27,778 across Lucide, Tabler, Phosphor, Simple Icons, Devicon, Logos, Fluent Emoji Flat and Flat Color Icons |
+| **Search** | Offline fuzzy matching, plus synonyms for the way people actually name pages (`roadmap`, `okr`, `hiring`, `security`) |
+| **Colour** | Notion's ten text colours for monochrome sets, or any hex you like |
+| **Applies** | One click. The SVG is rasterised to a transparent 280 × 280 PNG and handed to Notion's own upload |
+| **Privacy** | No network requests, no analytics, no accounts. One permission: `storage` |
 
-1. Open `chrome://extensions` (or `edge://extensions`).
-2. Enable **Developer mode**.
-3. Click **Load unpacked** and select this project's `dist` directory.
-4. Refresh Notion. Open a page's icon menu and click **✦ More icons**.
-5. Choose an ink color if desired, then click an icon to apply it immediately.
+## Install
 
-## Firefox / Zen
+**Chrome, Edge, Brave, Arc** — [Chrome Web Store](https://chrome.google.com/webstore/) *(pending first submission)*
+**Firefox, Zen** — [Firefox Add-ons](https://addons.mozilla.org/) *(pending first submission)*
 
-The Firefox-specific build is in `dist-firefox/`.
+### From source
 
-1. Open `about:debugging#/runtime/this-firefox`.
-2. Click **Load Temporary Add-on** and select `dist-firefox/manifest.json`.
-3. Refresh Notion and use the same flow.
+```bash
+npm ci
+npm run build
+```
 
-Temporary add-ons disappear on browser restart. Persistent Firefox installation
-requires Mozilla signing; this project is not signed or published. Chromium and
-Firefox ZIP bundles are produced by `npm run package` (unzip the Chromium archive
-before using Load unpacked).
+- **Chromium** — open `chrome://extensions`, enable Developer mode, *Load unpacked*, select `dist/`.
+- **Firefox** — open `about:debugging#/runtime/this-firefox`, *Load Temporary Add-on*, select `dist-firefox/manifest.json`.
+
+Refresh Notion afterwards. Temporary Firefox add-ons disappear on restart; a
+permanent install needs a signed build from the store.
+
+## Using it
+
+1. Click a page's icon in Notion.
+2. Choose **More icons** — or press <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>I</kbd> anywhere on a Notion page.
+3. Optionally set a colour with the dot beside the search field.
+4. Click an icon. It applies immediately and the panel closes.
+
+| Action | How |
+| --- | --- |
+| Apply | Click an icon |
+| Preview without applying | Right-click an icon |
+| Save / unsave | The bookmark on an icon, or in the preview bar |
+| Copy the SVG, or download a PNG | Preview an icon, then use the bar at the bottom |
+| Navigate by keyboard | <kbd>↓</kbd> from the search field, arrows in the grid, <kbd>Enter</kbd> applies the first result |
+
+Saved icons, recents, your colour and your last filter persist locally.
 
 ## How it works
 
-- A content script recognizes the visible Emojis / Icons / Custom tab group.
-- It appends one library entry and displays a compact, same-width panel beneath
-  the native tabs. Switching to another tab dismisses the library.
-- A Shadow DOM panel isolates extension styling from Notion.
-- A background script loads bundled Iconify JSON and runs Fuse.js fuzzy search.
-- Search understands common ideas like `todo`, `learning`, `finance`, `coding`.
-- Selected SVGs are rasterized to PNG, then sent through Notion's image-paste
-  handler (or an existing native file input on older versions). The extension
-  clicks Save only after Notion enables it. It does not access your clipboard.
-- Color affects monochrome sets, including Simple Icons; full-color sets retain
-  their original palette. Dark mode starts with white ink; you can change it.
-- Hover an icon to see its name and collection. Clicking applies immediately;
-  there is no extra Apply button. If upload fails, PNG download is available.
-- Right-click an icon to save it as a favorite or download it without applying.
-- Icon licenses are linked in the selection preview; notices ship with the build.
+- A content script recognises the visible Emojis / Icons / Custom tab group by
+  its labels, in every language Notion currently ships, and appends one tab
+  styled from its own neighbours' computed styles.
+- The panel lives in a Shadow DOM so nothing leaks either way, and reads
+  Notion's live light/dark class so it follows the theme switch.
+- A background service worker loads the bundled Iconify JSON and runs Fuse.js
+  fuzzy search off the editing thread.
+- The chosen SVG is rasterised to a 280 × 280 PNG and passed to Notion's own
+  custom-image paste handler, or to a native file input. Save is clicked only
+  if Notion actually asks for one. The clipboard is never read or replaced.
+- Because Notion stores the image, applied icons survive uninstalling this
+  extension and appear on your other devices.
 
-No paid icon APIs, network search, tokens, accounts, or private Notion API calls.
-Since the image is uploaded to Notion, icons do not depend on this extension or
-an external icon CDN after saving, and can appear on other devices.
+No paid icon APIs, no network search, no tokens, no Notion private API calls.
 
-## Compatibility and honest limitations
+## Honest limitations
 
-**Live Notion upload compatibility has not yet been verified against a logged-in
-Notion browser session.** Automated tests and the browser fixture exercise tab
-injection, fuzzy search, image conversion, and paste / native-input upload flows.
-Notion can change its DOM, labels, or upload handlers; this integration is
-best-effort, not an official Notion API. English and several translated tab
-labels are recognized, but not every locale. Start with English if detection fails.
+**Live upload against a logged-in Notion session has not been verified by the
+author.** The automated tests and the browser fixture exercise tab injection,
+fuzzy search, PNG conversion and both upload paths, but Notion can change its
+DOM at any time — this is a best-effort integration, not an official API.
 
-If the tab is missing, press **Alt + Shift + I** on a Notion page to open the
-library, or click the extension toolbar icon and **Open icon library**. The
-extension supports the current `app.notion.com` host and older Notion hosts.
-Applying still requires an open native page-icon popup. If native upload
-is unavailable, use **↓ PNG**, then upload it manually in Notion's Custom tab.
-The extension never reports that Notion saved the icon merely because it sent a
-file: wait for Notion's upload to finish and verify the page icon yourself.
-
-The first open may take a moment to index the catalog. Roughly 32 MB is bundled
-uncompressed. Search runs in the background, not in Notion's editing thread.
-Favorites store icon IDs, not color variants. Designed for desktop web pages;
-it does not modify Notion's desktop app, mobile app, or public notion.site pages.
+- If the tab is missing, use <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>I</kbd>, or the toolbar button.
+- If the upload fails, preview the icon and use **↓ PNG**, then upload it from Notion's Upload tab.
+- The extension never claims Notion saved anything. It distinguishes three
+  outcomes — Notion asked for a Save and got one, Notion took the image and
+  closed its menu, or Notion took the file and said nothing. The third leaves
+  the panel open and tells you to check the page icon, because handing over a
+  file is not evidence that Notion kept it.
+- Desktop web only: it does not touch Notion's desktop app, mobile app, or public `notion.site` pages.
+- Roughly 32 MB of icon data is bundled uncompressed; the first open indexes it once.
 
 ## Development
 
-Use Node 22.12+ (tested with Node 25) and npm.
+Node 20+ (CI runs 22).
 
-```sh
+```bash
 npm ci
-npm run build
-npm test
-npm run dev
+npm test            # 27 tests: detection, upload outcomes, search, sanitisation, manifest
+npm run brand       # regenerate icons from scripts/brand.mjs — output is committed
+npm run build       # dist/ (Chromium) and dist-firefox/
+npm run dev         # build, then serve the integration fixture on :4173
+npm run package     # releases/noticon-{chrome,firefox}-v<version>.zip
+npm run verify      # brand + test + build, the same gate CI runs
 ```
 
-`npm run dev` serves a representative integration fixture at
-http://127.0.0.1:4173. It is deliberately labeled **not live Notion**. The fixture
-uses the same catalog, picker, detection, and upload code, with a mock extension
-messaging API. The demo is excluded from distributable ZIPs.
+`npm run dev` serves a deliberately-labelled fixture that is **not** live Notion.
+It runs the real picker, detection and upload code against a mock messaging API,
+and has a dark-mode toggle for checking theme handling.
 
-Source map:
+| File | Responsibility |
+| --- | --- |
+| [src/notion.js](src/notion.js) | DOM recognition, the native upload adapter, PNG conversion |
+| [src/picker.js](src/picker.js) | The panel, colour well, saved/recent, apply flow |
+| [src/catalog.js](src/catalog.js) | Fuzzy search, synonyms, curated suggestions, SVG generation |
+| [src/theme.js](src/theme.js) | Notion's surface tokens and colour palette |
+| [src/styles.js](src/styles.js) | The panel stylesheet |
+| [src/content.js](src/content.js) | Tab injection and the keyboard shortcut |
+| [scripts/brand.mjs](scripts/brand.mjs) | Brand geometry → the committed PNG icons |
+| [scripts/build.mjs](scripts/build.mjs) | Both browser builds, version injection, licence metadata |
 
-- `src/notion.js`: DOM recognition, native upload adapter, PNG conversion.
-- `src/picker.js`: isolated picker and local favorites/recents.
-- `src/catalog.js`: fuzzy search, synonyms, SVG generation.
-- `src/background.js`: bundled library loading and extension messages.
-- `src/content.js`: tab injection and keyboard shortcut.
-- `scripts/build.mjs`: Chromium and Firefox builds and license metadata.
+## Releasing
 
-After changing code, build, reload the extension, and refresh Notion.
-See `PRIVACY.md` and `THIRD_PARTY_NOTICES.md` before distribution.
+Tag it; CI does the rest.
+
+```bash
+npm version minor
+git push --follow-tags
+```
+
+`.github/workflows/release.yml` verifies the tag against `package.json`, runs
+the tests, rebuilds, packages, publishes to both stores and opens a GitHub
+Release. Publishing steps skip themselves when their secrets are absent.
+See [store/DEPLOY.md](store/DEPLOY.md) for the credentials, and
+[store/listing.md](store/listing.md) for the listing copy.
+
+## Legal
+
+MIT — see [LICENSE](LICENSE). Bundled icon sets keep their own licences; see
+[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md), and the per-set notices in
+`notices/`, which ship inside the package.
+
+Noticon is an independent project. It is **not affiliated with, endorsed by, or
+sponsored by Notion Labs, Inc.** "Notion" is their trademark, used here only to
+describe what this extension works with.

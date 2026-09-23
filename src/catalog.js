@@ -9,13 +9,47 @@ export const GROUPS = {
 };
 export const MONO = new Set(['lucide', 'tabler', 'ph', 'simple-icons']);
 export const FEATURED = [
+  // Brands and developer tools
   'logos:notion-icon', 'logos:github-icon', 'logos:figma', 'logos:react', 'logos:typescript-icon', 'logos:python',
+  'logos:javascript', 'logos:nodejs-icon', 'logos:docker-icon', 'logos:google-icon', 'logos:slack-icon',
+  'logos:aws', 'logos:vercel-icon', 'logos:tailwindcss-icon', 'logos:postgresql', 'logos:git-icon', 'logos:linear-icon',
+  'logos:spotify-icon', 'logos:youtube-icon', 'devicon:vscode', 'devicon:kubernetes',
+  // Colourful
   'fluent-emoji-flat:rocket', 'fluent-emoji-flat:books', 'fluent-emoji-flat:seedling', 'fluent-emoji-flat:artist-palette',
   'fluent-emoji-flat:light-bulb', 'fluent-emoji-flat:laptop', 'fluent-emoji-flat:globe-showing-europe-africa',
-  'flat-color-icons:folder', 'flat-color-icons:idea', 'flat-color-icons:calendar',
+  'fluent-emoji-flat:calendar', 'fluent-emoji-flat:memo', 'fluent-emoji-flat:bar-chart', 'fluent-emoji-flat:money-bag',
+  'fluent-emoji-flat:briefcase', 'fluent-emoji-flat:brain', 'fluent-emoji-flat:sparkles', 'fluent-emoji-flat:fire',
+  'fluent-emoji-flat:party-popper', 'fluent-emoji-flat:alarm-clock', 'fluent-emoji-flat:mobile-phone',
+  'fluent-emoji-flat:camera', 'fluent-emoji-flat:headphone', 'fluent-emoji-flat:house', 'fluent-emoji-flat:world-map',
+  'fluent-emoji-flat:chart-increasing', 'fluent-emoji-flat:locked', 'fluent-emoji-flat:key', 'fluent-emoji-flat:pushpin',
+  'fluent-emoji-flat:paperclip', 'fluent-emoji-flat:package', 'fluent-emoji-flat:gear', 'fluent-emoji-flat:wrench',
+  'fluent-emoji-flat:test-tube', 'fluent-emoji-flat:microscope', 'fluent-emoji-flat:graduation-cap',
+  'fluent-emoji-flat:open-book', 'fluent-emoji-flat:pencil', 'fluent-emoji-flat:card-index-dividers',
+  'fluent-emoji-flat:file-folder', 'fluent-emoji-flat:inbox-tray', 'fluent-emoji-flat:envelope', 'fluent-emoji-flat:telephone',
+  'fluent-emoji-flat:handshake', 'fluent-emoji-flat:person-running', 'fluent-emoji-flat:green-apple',
+  'fluent-emoji-flat:hot-beverage', 'fluent-emoji-flat:birthday-cake', 'fluent-emoji-flat:four-leaf-clover',
+  'fluent-emoji-flat:sun', 'fluent-emoji-flat:crescent-moon', 'fluent-emoji-flat:star', 'fluent-emoji-flat:high-voltage',
+  'fluent-emoji-flat:compass', 'fluent-emoji-flat:luggage', 'fluent-emoji-flat:airplane', 'fluent-emoji-flat:mountain',
+  'fluent-emoji-flat:deciduous-tree', 'fluent-emoji-flat:potted-plant', 'fluent-emoji-flat:trophy', 'fluent-emoji-flat:bookmark-tabs',
+  'flat-color-icons:folder', 'flat-color-icons:idea', 'flat-color-icons:calendar', 'flat-color-icons:todo-list',
+  'flat-color-icons:statistics', 'flat-color-icons:business', 'flat-color-icons:database', 'flat-color-icons:settings',
+  'flat-color-icons:library', 'flat-color-icons:home', 'flat-color-icons:about', 'flat-color-icons:package',
+  'flat-color-icons:document', 'flat-color-icons:briefcase', 'flat-color-icons:currency-exchange', 'flat-color-icons:conference-call',
+  // Line icons
   'lucide:sparkles', 'lucide:code', 'lucide:coffee', 'lucide:heart', 'lucide:target', 'lucide:music',
-  'tabler:planet', 'tabler:brain', 'ph:plant', 'ph:mountains'
+  'lucide:rocket', 'lucide:book-open', 'lucide:calendar', 'lucide:circle-check', 'lucide:layers', 'lucide:compass',
+  'lucide:zap', 'lucide:flag', 'lucide:lightbulb', 'lucide:pen-tool', 'lucide:folder', 'lucide:users',
+  'lucide:message-circle', 'lucide:bell', 'lucide:shield', 'lucide:star', 'lucide:map', 'lucide:clock',
+  'lucide:camera', 'lucide:palette', 'lucide:terminal', 'lucide:database', 'lucide:cloud', 'lucide:globe',
+  'lucide:leaf', 'lucide:flame', 'lucide:trophy', 'lucide:briefcase', 'lucide:graduation-cap', 'lucide:activity',
+  'lucide:chart-bar', 'lucide:inbox', 'lucide:bookmark', 'lucide:link', 'lucide:lock', 'lucide:settings',
+  'lucide:smile', 'lucide:sun', 'lucide:moon', 'lucide:house', 'tabler:planet', 'tabler:brain', 'tabler:bulb',
+  'tabler:rocket', 'tabler:notebook', 'tabler:chart-line', 'tabler:building', 'ph:plant', 'ph:mountains',
+  'ph:brain', 'ph:rocket-launch', 'ph:book-bookmark', 'ph:anchor', 'ph:campfire'
 ];
+// Page icons get picked by theme, not by icon name: nobody searches "seedling"
+// when the page is called Roadmap. These map the way people name pages onto the
+// words the icon sets actually use.
 const SYNONYMS = {
   coding: 'code terminal programming developer', development: 'code developer',
   todo: 'check checklist list task', tasks: 'check checklist list task',
@@ -23,7 +57,22 @@ const SYNONYMS = {
   learning: 'book graduation school', design: 'palette brush pen figma',
   work: 'briefcase building laptop', fitness: 'dumbbell running gym',
   ai: 'robot brain sparkles', javascript: 'javascript js', database: 'database sql storage',
-  notes: 'notebook note pencil', docs: 'file document book', settings: 'settings gear cog'
+  notes: 'notebook note pencil', docs: 'file document book', settings: 'settings gear cog',
+  roadmap: 'map route flag milestone', meeting: 'users calendar video presentation',
+  team: 'users people group', okr: 'target flag trending chart',
+  wiki: 'book library archive', inbox: 'inbox mail tray bell',
+  budget: 'calculator receipt coins chart', hiring: 'user plus id badge briefcase',
+  marketing: 'megaphone trending chart target', sales: 'handshake trending receipt',
+  support: 'life buoy headset message', legal: 'scale gavel shield file',
+  security: 'shield lock key fingerprint', release: 'rocket package tag git',
+  bug: 'bug alert wrench', idea: 'light bulb sparkles brain',
+  personal: 'home heart user coffee', health: 'heart pulse stethoscope leaf',
+  recipe: 'chef utensils pot bowl', music: 'music headphones disc guitar',
+  reading: 'book bookmark glasses', writing: 'pen feather typewriter file',
+  archive: 'archive box folder', analytics: 'chart bar trending activity',
+  api: 'plug webhook code braces', infra: 'server cloud database network',
+  cloud: 'cloud server upload', mobile: 'smartphone device tablet',
+  planning: 'calendar list map target', review: 'eye check clipboard star'
 };
 export function normalizeQuery(query) {
   return String(query || '').trim().toLowerCase().replace(/[_-]+/g, ' ').replace(/\s+/g, ' ').slice(0, 100);
@@ -69,8 +118,22 @@ export function createCatalog(sets) {
     const safeColor = /^#[0-9a-f]{6}$/i.test(color) ? color : '#37352f';
     return iconToHTML(built.body.replaceAll('currentColor', safeColor), built.attributes);
   }
+  /**
+   * Saved and Recent are lists of ids with no search behind them. Rendering
+   * them one message per icon meant 200 round trips through the worker, so
+   * they are resolved in a single call. Unknown ids are dropped rather than
+   * failing the batch: a set can disappear between extension versions.
+   */
+  function icons(ids, color) {
+    const out = [];
+    for (const id of Array.isArray(ids) ? ids.slice(0, 400) : []) {
+      try { out.push({ id, svg: icon(id, color) }); } catch { /* stale id */ }
+    }
+    return out;
+  }
+
   return {
-    search, icon,
+    search, icon, icons,
     info: Object.fromEntries(Object.entries(sets).map(([p, s]) => [p, { ...s.info, count: Object.keys(s.data.icons).length }])),
     count: entries.length
   };

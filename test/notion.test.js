@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { JSDOM } from 'jsdom';
 import { findIconPopup, uploadToNotion, waitFor } from '../src/notion.js';
-import { safeSvg } from '../src/picker.js';
+import { needsPlate, safeSvg } from '../src/picker.js';
 function setup(html) {
   const dom = new JSDOM(html);
   globalThis.document = dom.window.document;
@@ -37,8 +37,9 @@ test('passes file through custom upload, without private API calls', async () =>
     popup.root.querySelector('.body').append(input);
   });
   globalThis.DataTransfer = class { files = []; items = { add: file => this.files.push(file) }; };
-  await uploadToNotion(new dom.window.File(['png'], 'heart.png'), popup);
+  const outcome = await uploadToNotion(new dom.window.File(['png'], 'heart.png'), popup, { settleMs: 120 });
   assert.ok(changed);
+  assert.equal(outcome, 'sent');
 });
 test('fails safely when icon popup is missing', async () => {
   await assert.rejects(uploadToNotion({}, null), /Open Notion/);
@@ -54,8 +55,9 @@ test('supports current Emoji / Icons / Upload panel using paste and Save', async
     save.addEventListener('click', () => { saved = true; });
   });
   const image = new dom.window.File(['png'], 'selected.png', { type: 'image/png' });
-  await uploadToNotion(image, popup);
+  const outcome = await uploadToNotion(image, popup, { settleMs: 2000 });
   assert.equal(pasted, image); assert.ok(saved);
+  assert.equal(outcome, 'saved');
 });
 test('does not save a stale unrelated upload preview', async () => {
   setup(fixture);
@@ -64,7 +66,7 @@ test('does not save a stale unrelated upload preview', async () => {
     popup.root.querySelector('.body').innerHTML = '<button>Upload an image</button><button>Save</button>';
     popup.root.querySelector('.body button:last-child').addEventListener('click', () => { saved = true; });
   });
-  await assert.rejects(uploadToNotion({}, popup), /unsaved image/);
+  await assert.rejects(uploadToNotion({}, popup, { settleMs: 120 }), /unsaved image/);
   assert.equal(saved, false);
 });
 test('SVG sanitation strips active content and external references', () => {
@@ -73,4 +75,59 @@ test('SVG sanitation strips active content and external references', () => {
   assert.equal(svg.querySelector('script, foreignObject, image'), null);
   assert.equal(svg.querySelector('path').getAttribute('onclick'), null);
   assert.equal(svg.querySelector('use').getAttribute('href'), null);
+});
+
+test('only dark-on-transparent icons get a light plate in dark mode', () => {
+  setup('');
+  assert.equal(needsPlate('<svg><path fill="#181717" d="M0 0"/></svg>'), true);
+  assert.equal(needsPlate('<svg><path fill="#1DB954" d="M0 0"/></svg>'), false);
+  assert.equal(needsPlate('<svg><path fill="#000"/><path fill="#fff"/></svg>'), false);
+  assert.equal(needsPlate('<svg><path fill="currentColor"/></svg>'), false);
+});
+
+test('an upload panel with no Save button is not treated as a failure', async () => {
+  // Regression: current Notion applies an uploaded page icon immediately and
+  // shows no Save button. Demanding one reported working uploads as errors.
+  const dom = setup(fixture.replace('Custom', 'Upload'));
+  const popup = findIconPopup();
+  let received;
+  popup.custom.addEventListener('click', () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    Object.defineProperty(input, 'files', { writable: true, value: [] });
+    input.addEventListener('change', () => { received = input.files[0]; });
+    popup.root.querySelector('.body').append(input);
+  });
+  const image = new dom.window.File(['png'], 'selected.png', { type: 'image/png' });
+  const outcome = await uploadToNotion(image, popup, { settleMs: 200 });
+  assert.equal(received, image);
+  assert.equal(outcome, 'sent');
+});
+
+test('reports applied when Notion takes the image and closes its menu', async () => {
+  const dom = setup(fixture.replace('Custom', 'Upload'));
+  const popup = findIconPopup();
+  popup.custom.addEventListener('click', () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    Object.defineProperty(input, 'files', { writable: true, value: [] });
+    // Notion unmounts the icon menu once it has accepted the image.
+    input.addEventListener('change', () => setTimeout(() => popup.root.remove(), 10));
+    popup.root.querySelector('.body').append(input);
+  });
+  const outcome = await uploadToNotion(new dom.window.File(['png'], 'x.png'), popup, { settleMs: 2000 });
+  assert.equal(outcome, 'applied');
+});
+
+test('finds the file chooser behind a label the exact list does not know', async () => {
+  const dom = setup(fixture.replace('Custom', 'Upload'));
+  const popup = findIconPopup();
+  let pasted;
+  popup.custom.addEventListener('click', () => {
+    popup.root.querySelector('.body').innerHTML = '<button>Choose a picture…</button>';
+    popup.root.addEventListener('paste', e => { pasted = e.clipboardData.files[0]; });
+  });
+  const image = new dom.window.File(['png'], 'x.png', { type: 'image/png' });
+  await uploadToNotion(image, popup, { settleMs: 120 });
+  assert.equal(pasted, image);
 });
