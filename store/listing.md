@@ -13,9 +13,9 @@ Short name: `Noticon`
 
 ## Summary / short description
 
-> 27,000+ offline icons inside Notion's own page-icon menu. Fuzzy search, brand logos, colour control. No account, no tracking.
+> 39,000+ offline icons inside Notion's own page-icon menu: emoji, colour, logos, duotone. No account, no tracking.
 
-*(129 characters; Chrome's limit is 132.)*
+*(113 characters; Chrome's limit is 132.)*
 
 ## Category
 
@@ -24,7 +24,7 @@ Short name: `Noticon`
 
 ## Full description
 
-Notion gives you emoji and a small icon set. Noticon adds 27,778 more, in the
+Notion gives you emoji and a small icon set. Noticon adds 39,819 more, in the
 same place you already look for them.
 
 Click a page icon, choose **More icons**, and search. Click once — the icon is
@@ -32,13 +32,23 @@ applied. That is the whole flow.
 
 WHAT YOU GET
 
-• 27,778 icons across eight collections — Lucide, Tabler, Phosphor, Simple
-  Icons, Devicon, Logos, Fluent Emoji Flat and Flat Color Icons.
+• 39,819 icons across 18 collections, filtered by Colour, Emoji, Brands,
+  Duotone or Simple.
+• 15,838 full-colour icons: Twemoji, Fluent Emoji Flat, Streamline Emojis,
+  Flat Color Icons, Fluent UI System Color, Streamline Ultimate Color,
+  Material Icon Theme, Catppuccin and Circle Flags.
+• 8,130 emoji in three drawing styles, applied as real images rather than
+  characters, so they look the same everywhere.
 • Brand and product logos in their real colours: GitHub, Figma, React, AWS,
-  Slack, Docker, Python and thousands more.
-• Colourful illustrated icons when a page wants personality, and clean line
-  icons when it does not.
-• Tint any monochrome icon with Notion's own ten text colours, or any hex code.
+  Slack, Docker, Python and thousands more, from Logos, Devicon and Skill
+  Icons.
+• 4,462 duotone icons — Solar, Duoicons and Phosphor's duotone weight — that
+  still take a colour.
+• Country flags that answer to their country's name, not just its ISO code.
+• Clean line icons from Lucide, Tabler and Phosphor when a page wants
+  something quieter.
+• Tint any line or duotone icon with Notion's own ten text colours, or any
+  hex code.
 • Fuzzy search that survives typos, and synonyms for the way people actually
   name pages: search "roadmap", "okr", "hiring", "security", "budget".
 • Save the icons you reuse, and pick from your recents.

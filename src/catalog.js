@@ -1,20 +1,18 @@
 import Fuse from 'fuse.js';
 import { getIconData, iconToSVG, iconToHTML } from '@iconify/utils';
+import { GROUP_IDS, describe, groupsOf } from './collections.js';
 
-export const GROUPS = {
-  all: [],
-  simple: ['lucide', 'tabler', 'ph'],
-  brands: ['simple-icons', 'logos', 'devicon'],
-  colorful: ['fluent-emoji-flat', 'flat-color-icons', 'logos', 'devicon']
-};
-export const MONO = new Set(['lucide', 'tabler', 'ph', 'simple-icons']);
 export const FEATURED = [
   // Brands and developer tools
   'logos:notion-icon', 'logos:github-icon', 'logos:figma', 'logos:react', 'logos:typescript-icon', 'logos:python',
   'logos:javascript', 'logos:nodejs-icon', 'logos:docker-icon', 'logos:google-icon', 'logos:slack-icon',
   'logos:aws', 'logos:vercel-icon', 'logos:tailwindcss-icon', 'logos:postgresql', 'logos:git-icon', 'logos:linear-icon',
   'logos:spotify-icon', 'logos:youtube-icon', 'devicon:vscode', 'devicon:kubernetes',
-  // Colourful
+  'skill-icons:notion-light', 'skill-icons:github-dark', 'skill-icons:figma-light', 'skill-icons:react-dark',
+  'skill-icons:python-dark', 'skill-icons:vscode-dark', 'skill-icons:golang', 'skill-icons:tailwindcss-dark',
+  'skill-icons:linux-dark', 'skill-icons:postgresql-dark', 'skill-icons:aws-dark', 'skill-icons:nodejs-dark',
+  'simple-icons:notion', 'simple-icons:linear', 'simple-icons:openai', 'simple-icons:obsidian',
+  // Emoji
   'fluent-emoji-flat:rocket', 'fluent-emoji-flat:books', 'fluent-emoji-flat:seedling', 'fluent-emoji-flat:artist-palette',
   'fluent-emoji-flat:light-bulb', 'fluent-emoji-flat:laptop', 'fluent-emoji-flat:globe-showing-europe-africa',
   'fluent-emoji-flat:calendar', 'fluent-emoji-flat:memo', 'fluent-emoji-flat:bar-chart', 'fluent-emoji-flat:money-bag',
@@ -31,10 +29,54 @@ export const FEATURED = [
   'fluent-emoji-flat:sun', 'fluent-emoji-flat:crescent-moon', 'fluent-emoji-flat:star', 'fluent-emoji-flat:high-voltage',
   'fluent-emoji-flat:compass', 'fluent-emoji-flat:luggage', 'fluent-emoji-flat:airplane', 'fluent-emoji-flat:mountain',
   'fluent-emoji-flat:deciduous-tree', 'fluent-emoji-flat:potted-plant', 'fluent-emoji-flat:trophy', 'fluent-emoji-flat:bookmark-tabs',
+  'twemoji:rocket', 'twemoji:light-bulb', 'twemoji:books', 'twemoji:artist-palette', 'twemoji:bullseye',
+  'twemoji:chart-increasing', 'twemoji:party-popper', 'twemoji:brain', 'twemoji:crystal-ball', 'twemoji:sparkles',
+  'twemoji:fire', 'twemoji:seedling', 'twemoji:money-bag', 'twemoji:briefcase', 'twemoji:memo', 'twemoji:calendar',
+  'twemoji:file-folder', 'twemoji:card-index-dividers', 'twemoji:graduation-cap', 'twemoji:laptop', 'twemoji:gear',
+  'twemoji:locked', 'twemoji:key', 'twemoji:pushpin', 'twemoji:handshake', 'twemoji:hot-beverage', 'twemoji:trophy',
+  'twemoji:compass', 'twemoji:airplane', 'twemoji:mountain', 'twemoji:deciduous-tree', 'twemoji:sun', 'twemoji:star',
+  'twemoji:high-voltage', 'twemoji:robot', 'twemoji:ghost', 'twemoji:unicorn', 'twemoji:dragon', 'twemoji:rainbow',
+  'twemoji:four-leaf-clover', 'twemoji:cherry-blossom', 'twemoji:maple-leaf', 'twemoji:pizza', 'twemoji:birthday-cake',
+  'twemoji:anchor', 'twemoji:castle', 'twemoji:office-building', 'twemoji:school', 'twemoji:dna', 'twemoji:microscope',
+  'streamline-emojis:rocket', 'streamline-emojis:fire', 'streamline-emojis:artist-palette', 'streamline-emojis:calendar',
+  'streamline-emojis:money-bag', 'streamline-emojis:graduation-cap', 'streamline-emojis:open-book',
+  'streamline-emojis:crystal-ball-1', 'streamline-emojis:wrapped-gift-1', 'streamline-emojis:robot-face-1',
+  'streamline-emojis:sunflower-1', 'streamline-emojis:birthday-cake-1', 'streamline-emojis:star-struck-1',
+  'streamline-emojis:airplane', 'streamline-emojis:musical-note', 'streamline-emojis:ghost', 'streamline-emojis:rainbow',
+  'streamline-emojis:anchor', 'streamline-emojis:alien', 'streamline-emojis:pizza-1',
+  // Colour
   'flat-color-icons:folder', 'flat-color-icons:idea', 'flat-color-icons:calendar', 'flat-color-icons:todo-list',
   'flat-color-icons:statistics', 'flat-color-icons:business', 'flat-color-icons:database', 'flat-color-icons:settings',
   'flat-color-icons:library', 'flat-color-icons:home', 'flat-color-icons:about', 'flat-color-icons:package',
   'flat-color-icons:document', 'flat-color-icons:briefcase', 'flat-color-icons:currency-exchange', 'flat-color-icons:conference-call',
+  // Fluent Color keeps only its largest variant of each icon, so these carry
+  // the pixel size upstream drew it at; the suggested-icon test guards them.
+  'fluent-color:lightbulb-48', 'fluent-color:calendar-48', 'fluent-color:notebook-32', 'fluent-color:people-team-48',
+  'fluent-color:chart-multiple-32', 'fluent-color:briefcase-48', 'fluent-color:book-open-48', 'fluent-color:trophy-48',
+  'fluent-color:shield-checkmark-48', 'fluent-color:database-48', 'fluent-color:code-24', 'fluent-color:bot-24',
+  'fluent-color:clipboard-task-24', 'fluent-color:megaphone-loud-32', 'fluent-color:savings-32', 'fluent-color:globe-24',
+  'fluent-color:design-ideas-48', 'fluent-color:puzzle-piece-48', 'fluent-color:toolbox-32', 'fluent-color:premium-32',
+  'streamline-ultimate-color:award-trophy-1', 'streamline-ultimate-color:book-open-bookmark',
+  'streamline-ultimate-color:calendar-1', 'streamline-ultimate-color:programming-book',
+  'streamline-ultimate-color:shelf-books-1', 'streamline-ultimate-color:app-window-pie-chart',
+  'streamline-ultimate-color:notes-book', 'streamline-ultimate-color:office-desk-1',
+  'material-icon-theme:folder-docs-open', 'material-icon-theme:folder-api-open', 'material-icon-theme:markdown',
+  'material-icon-theme:database', 'material-icon-theme:python', 'material-icon-theme:typescript',
+  'catppuccin:folder-src-open', 'catppuccin:markdown', 'catppuccin:database', 'catppuccin:figma',
+  'circle-flags:fr', 'circle-flags:us', 'circle-flags:gb', 'circle-flags:de', 'circle-flags:es', 'circle-flags:it',
+  'circle-flags:jp', 'circle-flags:br', 'circle-flags:ca', 'circle-flags:in', 'circle-flags:eu',
+  // Duotone
+  'solar:rocket-bold-duotone', 'solar:lightbulb-bold-duotone', 'solar:notebook-bold-duotone',
+  'solar:calendar-bold-duotone', 'solar:folder-bold-duotone', 'solar:case-bold-duotone', 'solar:target-bold-duotone',
+  'solar:graph-up-bold-duotone', 'solar:medal-star-bold-duotone', 'solar:pallete-2-bold-duotone',
+  'solar:magic-stick-3-bold-duotone', 'solar:cup-hot-bold-duotone', 'solar:shield-check-bold-duotone',
+  'solar:database-bold-duotone', 'solar:cloud-bold-duotone', 'solar:code-bold-duotone', 'solar:global-bold-duotone',
+  'solar:wallet-bold-duotone', 'solar:chat-round-bold-duotone', 'solar:map-bold-duotone', 'solar:fire-bold-duotone',
+  'solar:leaf-bold-duotone', 'solar:atom-bold-duotone', 'solar:plain-bold-duotone',
+  'duo-icons:rocket', 'duo-icons:palette', 'duo-icons:target', 'duo-icons:book', 'duo-icons:briefcase',
+  'duo-icons:calendar', 'duo-icons:chart-pie', 'duo-icons:compass', 'duo-icons:confetti', 'duo-icons:award',
+  'ph:rocket-launch-duotone', 'ph:lightbulb-duotone', 'ph:notebook-duotone', 'ph:plant-duotone',
+  'ph:chart-line-up-duotone', 'ph:compass-duotone', 'ph:campfire-duotone', 'ph:mountains-duotone',
   // Line icons
   'lucide:sparkles', 'lucide:code', 'lucide:coffee', 'lucide:heart', 'lucide:target', 'lucide:music',
   'lucide:rocket', 'lucide:book-open', 'lucide:calendar', 'lucide:circle-check', 'lucide:layers', 'lucide:compass',
@@ -72,7 +114,10 @@ const SYNONYMS = {
   archive: 'archive box folder', analytics: 'chart bar trending activity',
   api: 'plug webhook code braces', infra: 'server cloud database network',
   cloud: 'cloud server upload', mobile: 'smartphone device tablet',
-  planning: 'calendar list map target', review: 'eye check clipboard star'
+  planning: 'calendar list map target', review: 'eye check clipboard star',
+  country: 'flag', language: 'flag translate globe', region: 'flag map globe',
+  emoji: 'face smile grinning', file: 'document page folder',
+  onboarding: 'handshake graduation checklist door', retro: 'sticky note chat lightbulb'
 };
 export function normalizeQuery(query) {
   return String(query || '').trim().toLowerCase().replace(/[_-]+/g, ' ').replace(/\s+/g, ' ').slice(0, 100);
@@ -81,15 +126,19 @@ export function createCatalog(sets) {
   const entries = [];
   for (const [prefix, { data, info }] of Object.entries(sets)) {
     for (const name of Object.keys(data.icons)) {
-      entries.push({ id: `${prefix}:${name}`, prefix, name: name.replace(/-/g, ' '), set: info.name });
+      const { name: label, terms } = describe(prefix, name);
+      entries.push({ id: `${prefix}:${name}`, prefix, name: label, terms, set: info.name, groups: groupsOf(prefix, name) });
     }
   }
-  const fuse = new Fuse(entries, { keys: [{ name: 'name', weight: 3 }, { name: 'set', weight: 0.4 }], threshold: 0.32, ignoreLocation: true, includeScore: true });
+  const fuse = new Fuse(entries, {
+    keys: [{ name: 'name', weight: 3 }, { name: 'terms', weight: 1.2 }, { name: 'set', weight: 0.4 }],
+    threshold: 0.32, ignoreLocation: true, includeScore: true
+  });
   const byId = new Map(entries.map(e => [e.id, e]));
   function search({ query = '', group = 'all', prefix = '', offset = 0, limit = 96 } = {}) {
     const q = normalizeQuery(query);
-    const allowed = GROUPS[group] || [];
-    const accepts = e => (!prefix || e.prefix === prefix) && (!allowed.length || allowed.includes(e.prefix));
+    const wanted = GROUP_IDS.includes(group) ? group : 'all';
+    const accepts = e => (!prefix || e.prefix === prefix) && (wanted === 'all' || e.groups.includes(wanted));
     let ranked;
     if (q) {
       const terms = [...new Set([q, ...(SYNONYMS[q] || '').split(' ').filter(Boolean)])];

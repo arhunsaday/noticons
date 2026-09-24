@@ -1,10 +1,10 @@
 import { build } from 'esbuild';
 import { mkdir, readFile, writeFile, copyFile, cp, rm } from 'node:fs/promises';
 import { createRequire } from 'node:module';
+import { PREFIXES, shape } from '../src/collections.js';
 
 const require = createRequire(import.meta.url);
 const pkg = JSON.parse(await readFile('package.json', 'utf8'));
-const prefixes = ['lucide', 'tabler', 'ph', 'simple-icons', 'devicon', 'logos', 'fluent-emoji-flat', 'flat-color-icons'];
 
 await rm('dist', { recursive: true, force: true });
 await rm('dist-firefox', { recursive: true, force: true });
@@ -13,9 +13,9 @@ await mkdir('dist', { recursive: true });
 /* ── icon catalogue ─────────────────────────────────────────────────── */
 
 const catalog = {};
-for (const prefix of prefixes) {
+for (const prefix of PREFIXES) {
   catalog[prefix] = {
-    data: JSON.parse(await readFile(require.resolve(`@iconify-json/${prefix}/icons.json`), 'utf8')),
+    data: shape(prefix, JSON.parse(await readFile(require.resolve(`@iconify-json/${prefix}/icons.json`), 'utf8'))),
     info: JSON.parse(await readFile(require.resolve(`@iconify-json/${prefix}/info.json`), 'utf8'))
   };
   // Iconify ships this one without a resolvable licence URL.
@@ -72,4 +72,4 @@ firefox.browser_specific_settings = {
 await writeFile('dist-firefox/manifest.json', JSON.stringify(firefox, null, 2));
 
 const total = Object.values(catalog).reduce((n, s) => n + Object.keys(s.data.icons).length, 0);
-console.log(`Noticon v${pkg.version} — ${total.toLocaleString()} icons across ${prefixes.length} collections → dist/, dist-firefox/`);
+console.log(`Noticon v${pkg.version} — ${total.toLocaleString()} icons across ${PREFIXES.length} collections → dist/, dist-firefox/`);

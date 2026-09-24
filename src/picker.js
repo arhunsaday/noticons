@@ -1,5 +1,5 @@
 import styles from './styles.js';
-import { MONO } from './catalog.js';
+import { TINTABLE, describe } from './collections.js';
 import { glyph } from './glyphs.js';
 import { INK_COLORS, defaultInk, inkName } from './theme.js';
 import { svgToPng, uploadToNotion } from './notion.js';
@@ -69,8 +69,10 @@ const button = (className, onClick, label) => {
 
 const CATEGORIES = [
   ['all', 'All', 'grid'],
+  ['color', 'Colour', 'droplet'],
+  ['emoji', 'Emoji', 'smile'],
   ['brands', 'Brands', 'tag'],
-  ['colorful', 'Colour', 'droplet'],
+  ['duotone', 'Duotone', 'contrast'],
   ['simple', 'Simple', 'pen'],
   ['favorites', 'Saved', 'heart'],
   ['recent', 'Recent', 'clock']
@@ -210,7 +212,7 @@ export function openPicker({ popup, onClose }) {
   inkPop.hidden = true;
   inkPop.setAttribute('role', 'group');
   inkPop.setAttribute('aria-label', 'Icon colour');
-  inkPop.append(el('div', 'ink-pop-title', 'Monochrome icon colour'));
+  inkPop.append(el('div', 'ink-pop-title', 'Line and duotone colour'));
   const swatches = el('div', 'swatches');
   inkPop.append(swatches);
 
@@ -422,7 +424,7 @@ export function openPicker({ popup, onClose }) {
   function makeTile(item) {
     const tile = button('tile', () => apply(item));
     tile.dataset.iconId = item.id;
-    tile.dataset.plate = String(!MONO.has(item.prefix) && needsPlate(item.svg));
+    tile.dataset.plate = String(!TINTABLE.has(item.prefix) && needsPlate(item.svg));
     tile.tabIndex = -1;
     tile.setAttribute('aria-pressed', String(current?.id === item.id));
     tile.title = `${item.name} · ${item.set}\nClick to apply · Right-click to preview`;
@@ -515,7 +517,7 @@ export function openPicker({ popup, onClose }) {
     const { icons } = await request({ type: 'icons', ids, color: state.color });
     const items = icons.map(({ id, svg }) => {
       const [prefix, name] = id.split(':');
-      return { id, prefix, name: name.replaceAll('-', ' '), set: allInfo[prefix]?.name || prefix, svg };
+      return { id, prefix, ...describe(prefix, name), set: allInfo[prefix]?.name || prefix, svg };
     });
     return { items, total: items.length };
   }
@@ -569,13 +571,13 @@ export function openPicker({ popup, onClose }) {
     detail.replaceChildren();
 
     const box = el('div', 'preview');
-    box.dataset.plate = String(!MONO.has(item.prefix) && needsPlate(item.svg));
+    box.dataset.plate = String(!TINTABLE.has(item.prefix) && needsPlate(item.svg));
     box.append(safeSvg(item.svg));
 
     const info = el('div', 'info');
     info.append(el('div', 'name', item.name));
     const setMeta = allInfo[item.prefix];
-    const license = el('a', 'license', `${item.set}${MONO.has(item.prefix) ? '' : ' · original colours'}`);
+    const license = el('a', 'license', `${item.set}${TINTABLE.has(item.prefix) ? '' : ' · original colours'}`);
     license.title = setMeta?.license?.title || 'View licence';
     const href = setMeta?.license?.url || `https://icon-sets.iconify.design/${item.prefix}/`;
     if (/^https:\/\//.test(href)) { license.href = href; license.target = '_blank'; license.rel = 'noopener noreferrer'; }
