@@ -4,6 +4,42 @@ All notable changes to Noticon. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- **Ten more collections, 12,041 more icons — 39,819 in total.** The library
+  was two thirds monochrome line work, which is the one thing Notion's own
+  Icons tab already gives you. The new sets are all colour, emoji, logos or
+  duotone: Twemoji, Streamline Emojis, Fluent UI System Color, Streamline
+  Ultimate Color, Skill Icons, Material Icon Theme, Catppuccin Icons, Circle
+  Flags, Solar and Duoicons.
+- **Emoji and Duotone categories**, beside the existing All, Colour, Brands and
+  Simple. 8,130 emoji across three drawing styles; 4,462 duotone icons that
+  still take a tint. Phosphor is split by weight, so its duotone icons answer
+  Duotone and its other five weights answer Simple.
+- **Country flags searchable by country name.** Circle Flags names its icons by
+  ISO code, so nothing there matched a search for "France". Codes withdrawn
+  from ISO 3166 keep their own name rather than their successor's — `su` is the
+  Soviet flag, not Russia's.
+- Around 150 more suggested icons on open, covering the new categories, and a
+  test that fails if any suggested icon stops resolving.
+- `src/collections.js`: one list of what is bundled, which category each set
+  answers, and whether the colour picker repaints it — replacing the same set
+  of prefixes repeated across the build script, the catalogue and the tests.
+
+### Changed
+
+- The colour picker is labelled for what it actually repaints: line **and**
+  duotone icons.
+- The category row wraps instead of scrolling sideways with a hidden scrollbar,
+  which had put Saved and Recent behind a gesture nobody discovers.
+- Browsing with no search term now leads with the colour sets.
+- Solar contributes only its two duotone weights, and Fluent UI System Color
+  only the largest pixel size of each icon, so neither fills the grid with
+  near-duplicates. Bundled icon data grows from 32 MB to 52 MB; the packaged
+  extension is 12.6 MB.
+
 ## [1.0.0] — 2026-09-23
 
 First release under the name **Noticon** (previously "Notion Icons Plus"), and

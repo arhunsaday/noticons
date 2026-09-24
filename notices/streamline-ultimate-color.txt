@@ -1,0 +1,10 @@
+Streamline Ultimate Color Icons
+https://github.com/webalys-hq/streamline-vectors
+https://streamlinehq.com
+
+Copyright: Webalys / Streamline.
+
+Licensed under Creative Commons Attribution 4.0 International (CC BY 4.0),
+reproduced in `cc-by-4.0.txt` beside this notice. Upstream ships no LICENSE
+file; its README states the licence and asks that credit link to
+http://streamlinehq.com.

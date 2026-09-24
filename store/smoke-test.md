@@ -17,7 +17,7 @@ session can prove.
 | --- | --- | --- |
 | 1 | Click the page icon | Notion's popup opens with a **More icons** tab that matches its neighbours' size, weight and colour |
 | 2 | Click **More icons** | The panel opens under the tabs, same width, no gap or overhang |
-| 3 | Wait for the grid | Suggested icons appear; the count reads 27,778 |
+| 3 | Wait for the grid | Suggested icons appear; the count reads 39,819 |
 | 4 | Type `roadmap` | Map, route, flag and milestone icons appear within a moment |
 | 5 | Clear the search with the × | Suggested icons return |
 | 6 | Click the colour dot, pick Green | The monochrome icons in the grid turn green; colourful ones do not change |

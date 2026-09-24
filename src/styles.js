@@ -92,8 +92,10 @@ button:disabled{cursor:default}
 .well::-webkit-color-swatch,.well::-moz-color-swatch{border:0;border-radius:var(--radius)}
 
 /* ── Filters ─────────────────────────────────────────────────────────── */
-.categories{display:flex;gap:1px;padding:0 10px 6px;flex-shrink:0;overflow-x:auto;scrollbar-width:none}
-.categories::-webkit-scrollbar{display:none}
+/* Eight categories do not fit one row of a 420px popup, and a row that scrolls
+   with a hidden scrollbar hides Saved and Recent behind a gesture nobody
+   discovers. It wraps instead. */
+.categories{display:flex;flex-wrap:wrap;gap:1px;padding:0 10px 6px;flex-shrink:0}
 .category{
   display:flex;align-items:center;gap:4px;white-space:nowrap;flex-shrink:0;
   height:24px;padding:0 8px;border-radius:var(--radius);font-size:12px;color:var(--muted);

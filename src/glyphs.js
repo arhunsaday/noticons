@@ -17,7 +17,11 @@ const SHAPES = {
   download: [['path', { d: 'M8 2.4v7.4M4.8 6.9 8 10.1l3.2-3.2M2.9 13.3h10.2' }]],
   copy: [['rect', { x: 5.6, y: 5.6, width: 7.8, height: 7.8, rx: 1.6 }], ['path', { d: 'M10.6 3.4H4.2a1.6 1.6 0 0 0-1.6 1.6v6.4' }]],
   check: [['path', { d: 'M3.2 8.4 6.5 11.7 12.8 4.6' }]],
-  alert: [['circle', { cx: 8, cy: 8, r: 5.6 }], ['path', { d: 'M8 5.2v3.4M8 10.8h.01' }]]
+  alert: [['circle', { cx: 8, cy: 8, r: 5.6 }], ['path', { d: 'M8 5.2v3.4M8 10.8h.01' }]],
+  smile: [['circle', { cx: 8, cy: 8, r: 5.6 }], ['path', { d: 'M5.6 9.3a3 3 0 0 0 4.8 0' }],
+    ['path', { d: 'M6.2 6.3h.01M9.8 6.3h.01' }]],
+  contrast: [['circle', { cx: 8, cy: 8, r: 5.6 }],
+    ['path', { d: 'M8 2.4a5.6 5.6 0 0 1 0 11.2z', fill: 'currentColor', stroke: 'none' }]]
 };
 
 const FILLED = new Set(['sparkle', 'heart', 'bookmark', 'grid', 'tag']);

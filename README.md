@@ -1,21 +1,24 @@
 <div align="center">
   <img src="brand/logo.svg" width="72" height="72" alt="">
   <h1>Noticon</h1>
-  <p><strong>27,778 icons, inside Notion's own page-icon menu.</strong><br>
+  <p><strong>39,819 icons, inside Notion's own page-icon menu.</strong><br>
   Offline. No account. No tracking.</p>
 </div>
 
 ---
 
 Noticon adds a **More icons** tab next to Notion’s Emojis / Icons / Upload tabs.
-Search 27,778 icons across eight collections, tint the monochrome ones with
+Search 39,819 icons across 18 collections, tint the line and duotone ones with
 Notion's own colour palette, and click once to apply.
 
 | | |
 | --- | --- |
-| **Icons** | 27,778 across Lucide, Tabler, Phosphor, Simple Icons, Devicon, Logos, Fluent Emoji Flat and Flat Color Icons |
-| **Search** | Offline fuzzy matching, plus synonyms for the way people actually name pages (`roadmap`, `okr`, `hiring`, `security`) |
-| **Colour** | Notion's ten text colours for monochrome sets, or any hex you like |
+| **Icons** | 39,819 across 18 collections, filtered by Colour, Emoji, Brands, Duotone or Simple |
+| **Colour** | 15,838 full-colour icons: Fluent Emoji Flat, Twemoji, Streamline Emojis, Flat Color Icons, Fluent UI System Color, Streamline Ultimate Color, Material Icon Theme, Catppuccin, Circle Flags, Logos, Devicon, Skill Icons |
+| **Duotone** | 4,462 two-tone icons — Solar, Duoicons and Phosphor's duotone weight — all repainted by the colour picker |
+| **Line** | Lucide, Tabler, Phosphor and Simple Icons, for when a page wants something quieter |
+| **Search** | Offline fuzzy matching, plus synonyms for the way people actually name pages (`roadmap`, `okr`, `hiring`, `security`). Flags answer to country names, not just ISO codes |
+| **Tint** | Notion's ten text colours for the line and duotone sets, or any hex you like |
 | **Applies** | One click. The SVG is rasterised to a transparent 280 × 280 PNG and handed to Notion's own upload |
 | **Privacy** | No network requests, no analytics, no accounts. One permission: `storage` |
 
@@ -86,7 +89,7 @@ DOM at any time — this is a best-effort integration, not an official API.
   the panel open and tells you to check the page icon, because handing over a
   file is not evidence that Notion kept it.
 - Desktop web only: it does not touch Notion's desktop app, mobile app, or public `notion.site` pages.
-- Roughly 32 MB of icon data is bundled uncompressed; the first open indexes it once.
+- Roughly 52 MB of icon data is bundled uncompressed; the first open indexes it once.
 
 ## Development
 
@@ -94,7 +97,7 @@ Node 20+ (CI runs 22).
 
 ```bash
 npm ci
-npm test            # 27 tests: detection, upload outcomes, search, sanitisation, manifest
+npm test            # 31 tests: detection, upload outcomes, search, sanitisation, manifest
 npm run brand       # regenerate icons from scripts/brand.mjs — output is committed
 npm run build       # dist/ (Chromium) and dist-firefox/
 npm run dev         # build, then serve the integration fixture on :4173
@@ -111,6 +114,7 @@ and has a dark-mode toggle for checking theme handling.
 | [src/notion.js](src/notion.js) | DOM recognition, the native upload adapter, PNG conversion |
 | [src/picker.js](src/picker.js) | The panel, colour well, saved/recent, apply flow |
 | [src/catalog.js](src/catalog.js) | Fuzzy search, synonyms, curated suggestions, SVG generation |
+| [src/collections.js](src/collections.js) | Which sets are bundled, the category each answers, and how two of them are narrowed |
 | [src/theme.js](src/theme.js) | Notion's surface tokens and colour palette |
 | [src/styles.js](src/styles.js) | The panel stylesheet |
 | [src/content.js](src/content.js) | Tab injection and the keyboard shortcut |

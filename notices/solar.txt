@@ -1,0 +1,12 @@
+Solar
+https://www.figma.com/community/file/1166831539721848736
+
+Copyright: 480 Design.
+
+Licensed under Creative Commons Attribution 4.0 International (CC BY 4.0),
+reproduced in `cc-by-4.0.txt` beside this notice. The set is published as a
+Figma Community file rather than a repository, so it carries no LICENSE file
+of its own; the licence is the one declared on that file.
+
+Only the two duotone weights — `*-bold-duotone` and `*-line-duotone` — are
+bundled here. The other four weights are left out.
