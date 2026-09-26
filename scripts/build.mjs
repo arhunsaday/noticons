@@ -1,7 +1,8 @@
 import { build } from 'esbuild';
-import { mkdir, readFile, writeFile, copyFile, cp, rm } from 'node:fs/promises';
+import { mkdir, readFile, writeFile, copyFile, cp, rm, readdir, stat } from 'node:fs/promises';
 import { createRequire } from 'node:module';
 import { PREFIXES, shape } from '../src/collections.js';
+import { PARSE_LIMIT, shardIcons } from './shard.mjs';
 
 const require = createRequire(import.meta.url);
 const pkg = JSON.parse(await readFile('package.json', 'utf8'));
@@ -21,7 +22,26 @@ for (const prefix of PREFIXES) {
   // Iconify ships this one without a resolvable licence URL.
   if (prefix === 'flat-color-icons') catalog[prefix].info.license.url = 'https://github.com/icons8/flat-color-icons#good-boy-license';
 }
-await writeFile('dist/catalog.json', JSON.stringify(catalog));
+await mkdir('dist/catalog', { recursive: true });
+const index = {};
+for (const [prefix, set] of Object.entries(catalog)) {
+  const { icons, ...rest } = set.data;
+  const shards = shardIcons(icons);
+  for (const [n, shard] of shards.entries()) {
+    await writeFile(`dist/catalog/${prefix}.${n}.json`, JSON.stringify(shard));
+  }
+  index[prefix] = {
+    info: set.info,
+    data: rest,
+    shards: shards.length,
+    written: shards.reduce((n, shard) => n + Object.keys(shard).length, 0)
+  };
+}
+await writeFile('dist/catalog/index.json', JSON.stringify(index));
+
+const sharded = Object.entries(catalog).reduce((n, [prefix, set]) => n + Object.keys(set.data.icons).length, 0);
+const written = Object.entries(index).reduce((n, [prefix, entry]) => n + entry.written, 0);
+if (sharded !== written) throw new Error(`Sharding lost icons: ${sharded} in, ${written} out`);
 await writeFile('dist/licenses.json', JSON.stringify(Object.fromEntries(Object.entries(catalog).map(([p, v]) => [p, v.info])), null, 2));
 
 /* ── code ───────────────────────────────────────────────────────────── */
@@ -54,8 +74,9 @@ await copyFile('node_modules/@iconify/utils/license.txt', 'dist/notices/iconify-
 /* ── Firefox build ──────────────────────────────────────────────────── */
 
 await mkdir('dist-firefox', { recursive: true });
-const shared = ['content.js', 'background.js', 'catalog.json', 'licenses.json', 'popup.html', 'popup.js', 'THIRD_PARTY_NOTICES.md', 'PRIVACY.md', 'LICENSE'];
+const shared = ['content.js', 'background.js', 'licenses.json', 'popup.html', 'popup.js', 'THIRD_PARTY_NOTICES.md', 'PRIVACY.md', 'LICENSE'];
 for (const file of shared) await copyFile(`dist/${file}`, `dist-firefox/${file}`);
+await cp('dist/catalog', 'dist-firefox/catalog', { recursive: true });
 await cp('dist/notices', 'dist-firefox/notices', { recursive: true });
 await cp('extension/icons', 'dist-firefox/icons', { recursive: true });
 
@@ -71,5 +92,21 @@ firefox.browser_specific_settings = {
 };
 await writeFile('dist-firefox/manifest.json', JSON.stringify(firefox, null, 2));
 
+/* ── size guard ─────────────────────────────────────────────────────── */
+
+// Catching this here rather than in a store review queue.
+async function oversized(dir) {
+  const found = [];
+  for (const entry of await readdir(dir, { withFileTypes: true })) {
+    const path = `${dir}/${entry.name}`;
+    if (entry.isDirectory()) found.push(...await oversized(path));
+    else if ((await stat(path)).size > PARSE_LIMIT) found.push(path);
+  }
+  return found;
+}
+const tooBig = [...await oversized('dist'), ...await oversized('dist-firefox')];
+if (tooBig.length) throw new Error(`Mozilla will not parse files over 5 MB: ${tooBig.join(', ')}`);
+
 const total = Object.values(catalog).reduce((n, s) => n + Object.keys(s.data.icons).length, 0);
-console.log(`Noticons v${pkg.version} — ${total.toLocaleString()} icons across ${PREFIXES.length} collections → dist/, dist-firefox/`);
+const shardCount = Object.values(index).reduce((n, entry) => n + entry.shards, 0);
+console.log(`Noticons v${pkg.version} — ${total.toLocaleString()} icons across ${PREFIXES.length} collections (${shardCount} catalogue shards) → dist/, dist-firefox/`);

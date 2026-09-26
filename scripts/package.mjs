@@ -5,7 +5,7 @@ import { resolve } from 'node:path';
 const pkg = JSON.parse(await readFile('package.json', 'utf8'));
 // The demo fixture and its catalogue copy are build artefacts, not shippable
 // extension files; both stores flag unexpected extras.
-const files = ['manifest.json', 'background.js', 'content.js', 'catalog.json', 'licenses.json', 'popup.html', 'popup.js', 'icons', 'notices', 'THIRD_PARTY_NOTICES.md', 'PRIVACY.md', 'LICENSE'];
+const files = ['manifest.json', 'background.js', 'content.js', 'catalog', 'licenses.json', 'popup.html', 'popup.js', 'icons', 'notices', 'THIRD_PARTY_NOTICES.md', 'PRIVACY.md', 'LICENSE'];
 
 await mkdir('releases', { recursive: true });
 

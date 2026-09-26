@@ -99,6 +99,16 @@ the first build intended for the Chrome Web Store and Firefox Add-ons.
 
 ### Fixed
 
+- **Mozilla's validator rejected the add-on: `catalog.json` was too large to
+  parse.** AMO refuses to parse any file over 5 MB and reports it as an error,
+  and the bundled catalogue had grown to 52 MB in one file — with three sets
+  (Twemoji, Fluent Emoji Flat, Logos) over the limit on their own, so splitting
+  per collection would not have been enough either. Each set's icon bodies are
+  now split across numbered files under a 4 MB budget, stitched back together
+  at load; aliases, default sizes and licence metadata stay in one small index.
+  The build fails if any shipped file exceeds 5 MB, and if sharding and
+  reassembling ever disagree on the icon count.
+
 - **Applying an icon reported failure on current Notion.** The upload waited
   for a Save button and treated its absence as an error — but today's Upload
   tab applies a page icon immediately and shows no Save at all, so uploads that

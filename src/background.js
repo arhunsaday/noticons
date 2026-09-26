@@ -1,11 +1,8 @@
-import { createCatalog } from './catalog.js';
+import { loadCatalog } from './library.js';
 import { extensionApi as api } from './api.js';
 let loaded;
 function catalog() {
-  if (!loaded) loaded = fetch(api.runtime.getURL('catalog.json')).then(r => {
-    if (!r.ok) throw new Error('Cannot load bundled icon library');
-    return r.json();
-  }).then(createCatalog).catch(e => { loaded = undefined; throw e; });
+  if (!loaded) loaded = loadCatalog(path => api.runtime.getURL(path)).catch(e => { loaded = undefined; throw e; });
   return loaded;
 }
 const HANDLED = ['search', 'icon', 'icons', 'info'];

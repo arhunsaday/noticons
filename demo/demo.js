@@ -1,7 +1,7 @@
-import { createCatalog } from '../src/catalog.js';
+import { loadCatalog } from '../src/library.js';
 
 let library;
-const catalog = () => library ||= fetch('./catalog.json').then(r => r.json()).then(createCatalog);
+const catalog = () => library ||= loadCatalog(path => `./${path}`);
 
 // Stands in for the extension messaging API so the fixture exercises the real
 // picker, detection and upload code paths without a browser extension host.

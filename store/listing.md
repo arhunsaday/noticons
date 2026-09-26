@@ -15,7 +15,7 @@ Short name: `Noticons`
 
 > 39,000+ offline icons inside Notion's own page-icon menu: emoji, colour, logos, duotone. No account, no tracking.
 
-*(113 characters; Chrome's limit is 132.)*
+_(113 characters; Chrome's limit is 132.)_
 
 ## Category
 
@@ -30,30 +30,30 @@ same place you already look for them.
 Click a page icon, choose **More icons**, and search. Click once — the icon is
 applied. That is the whole flow.
 
-WHAT YOU GET
+Features:
 
 • 39,819 icons across 18 collections, filtered by Colour, Emoji, Brands,
-  Duotone or Simple.
+Duotone or Simple.
 • 15,838 full-colour icons: Twemoji, Fluent Emoji Flat, Streamline Emojis,
-  Flat Color Icons, Fluent UI System Color, Streamline Ultimate Color,
-  Material Icon Theme, Catppuccin and Circle Flags.
+Flat Color Icons, Fluent UI System Color, Streamline Ultimate Color,
+Material Icon Theme, Catppuccin and Circle Flags.
 • 8,130 emoji in three drawing styles, applied as real images rather than
-  characters, so they look the same everywhere.
+characters, so they look the same everywhere.
 • Brand and product logos in their real colours: GitHub, Figma, React, AWS,
-  Slack, Docker, Python and thousands more, from Logos, Devicon and Skill
-  Icons.
+Slack, Docker, Python and thousands more, from Logos, Devicon and Skill
+Icons.
 • 4,462 duotone icons — Solar, Duoicons and Phosphor's duotone weight — that
-  still take a colour.
+still take a colour.
 • Country flags that answer to their country's name, not just its ISO code.
 • Clean line icons from Lucide, Tabler and Phosphor when a page wants
-  something quieter.
+something quieter.
 • Tint any line or duotone icon with Notion's own ten text colours, or any
-  hex code.
+hex code.
 • Fuzzy search that survives typos, and synonyms for the way people actually
-  name pages: search "roadmap", "okr", "hiring", "security", "budget".
+name pages: search "roadmap", "okr", "hiring", "security", "budget".
 • Save the icons you reuse, and pick from your recents.
 • Right-click any icon to preview it, copy its SVG, or download a transparent
-  280 × 280 PNG.
+280 × 280 PNG.
 • Full keyboard control, and a shortcut (Alt+Shift+I) you can reassign.
 • Follows Notion's light and dark themes as you switch them.
 
@@ -89,20 +89,59 @@ Not affiliated with, endorsed by, or sponsored by Notion Labs, Inc.
 
 ---
 
-## Permission justifications (Chrome requires one per permission)
+## Chrome Web Store — Privacy practices
 
-| Permission | Justification |
-| --- | --- |
-| `storage` | Persists the user's own saved icons, recently used icons and colour preference in local extension storage. No browsing data, page content or personal information is stored, and nothing is transmitted. |
+Paste each block into the matching field. Chrome counts the `content_scripts`
+match patterns as **host permissions**, which is what triggers the “may require
+an in-depth review” notice — there is no way to keep the feature and avoid the
+notice, only to make the reviewer's job quick.
 
-**Host permissions:** none requested. The content script is declared against
-Notion's own domains only (`notion.so`, `notion.com`, and their `www`/`app`
-hosts), which is where the feature exists.
+### Single purpose
 
-**Remote code:** none. Every byte that executes is in the package. The icon
-catalogue is a bundled JSON file; nothing is fetched or evaluated at runtime.
+> Noticons adds a searchable icon library to Notion's own page-icon menu. It
+> adds one tab beside Notion's Emoji, Icons and Upload tabs; choosing an icon
+> from it sets the page's icon. That is the extension's only function.
 
-**Single purpose:** adding an icon library to Notion's page-icon menu.
+### Permission justification — `storage`
+
+> Stores the user's own preferences on their device: the icons they have saved,
+> the icons they have recently applied, and their chosen icon colour. These are
+> three keys holding short icon identifiers such as `lucide:heart`, nothing
+> more. No browsing data, page content or personal information is stored, and
+> nothing is transmitted anywhere.
+
+### Host permission justification
+
+> The extension's function is to add a tab inside Notion's page-icon menu, so it
+> must run a content script on Notion pages. It declares match patterns for
+> Notion's six web hosts only — www.notion.so, notion.so, app.notion.so,
+> www.notion.com, notion.com and app.notion.com. No other site is matched, no
+> wildcard host patterns are used, and no `host_permissions` field is declared.
+>
+> On those pages the content script reads only the visible controls of the
+> page-icon menu: the labels of the Emoji / Icons / Upload tabs, so it can place
+> its own tab beside them, and the upload control, so it can hand the chosen
+> image to Notion's existing image upload. It does not read page content,
+> documents, cookies, form data, credentials or the clipboard, and it makes no
+> network requests.
+>
+> activeTab is not sufficient. activeTab is granted only after the user clicks
+> the extension's toolbar button, which is after the moment the tab has to
+> already exist inside Notion's menu.
+
+### Remote code
+
+> **No, I am not using remote code.** Everything that executes is in the
+> package. The icon catalogue is a set of bundled JSON files read with
+> `chrome.runtime.getURL`; there is no `eval`, no remotely hosted script, and
+> the extension makes no network requests of any kind.
+
+### What a reviewer can check quickly
+
+- The only `fetch` in the source resolves `chrome.runtime.getURL('catalog/…')` — packaged files, never a URL.
+- No `host_permissions`, no `web_accessible_resources`, no `tabs` permission.
+- Local storage holds exactly three keys: `favorites`, `recent`, `prefs`.
+- Full source: <https://github.com/arhunsaday/notion-more-icons>
 
 ## Data-use disclosures
 
@@ -112,6 +151,7 @@ location, web history, or user activity, and no website content leaves the
 device.
 
 Certify all three:
+
 - Not being sold to third parties, outside of approved use cases.
 - Not being used or transferred for purposes unrelated to the item's core functionality.
 - Not being used or transferred to determine creditworthiness or for lending purposes.
@@ -126,12 +166,12 @@ Add-on ID: `noticons@arhunsaday.github.io`.
 
 ## Assets
 
-| Asset | Size | Where it comes from |
-| --- | --- | --- |
-| Store icon | 128 × 128 PNG | `extension/icons/icon-128.png` — `npm run brand` ✅ committed |
-| Small promo tile | 440 × 280 PNG | `brand/store/promo-440x280.png` — `node scripts/store-assets.mjs` ⚠️ **stale** |
-| Marquee promo tile | 1400 × 560 PNG | `brand/store/marquee-1400x560.png` — same script. ⚠️ **stale**. **Optional**: Chrome only uses it for featured placement |
-| Screenshots | 1280 × 800 PNG, at least one, up to five | **Capture by hand** on a real Notion page |
+| Asset              | Size                                     | Where it comes from                                                                                                      |
+| ------------------ | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| Store icon         | 128 × 128 PNG                            | `extension/icons/icon-128.png` — `npm run brand` ✅ committed                                                            |
+| Small promo tile   | 440 × 280 PNG                            | `brand/store/promo-440x280.png` — `node scripts/store-assets.mjs` ⚠️ **stale**                                           |
+| Marquee promo tile | 1400 × 560 PNG                           | `brand/store/marquee-1400x560.png` — same script. ⚠️ **stale**. **Optional**: Chrome only uses it for featured placement |
+| Screenshots        | 1280 × 800 PNG, at least one, up to five | **Capture by hand** on a real Notion page                                                                                |
 
 Both promo tiles still read "Noticon" and "27,778 icons". They render live text, so
 they have to be re-captured on a machine with the project's own fonts — the tiles
