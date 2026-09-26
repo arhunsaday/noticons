@@ -64,7 +64,7 @@ const firefox = structuredClone(manifest);
 firefox.background = { scripts: ['background.js'] };
 firefox.browser_specific_settings = {
   gecko: {
-    id: 'noticon@arhunsaday.github.io',
+    id: 'noticons@arhunsaday.github.io',
     strict_min_version: '128.0',
     data_collection_permissions: { required: ['none'] }
   }
@@ -72,4 +72,4 @@ firefox.browser_specific_settings = {
 await writeFile('dist-firefox/manifest.json', JSON.stringify(firefox, null, 2));
 
 const total = Object.values(catalog).reduce((n, s) => n + Object.keys(s.data.icons).length, 0);
-console.log(`Noticon v${pkg.version} — ${total.toLocaleString()} icons across ${PREFIXES.length} collections → dist/, dist-firefox/`);
+console.log(`Noticons v${pkg.version} — ${total.toLocaleString()} icons across ${PREFIXES.length} collections → dist/, dist-firefox/`);

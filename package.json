@@ -1,9 +1,9 @@
 {
-  "name": "noticon",
+  "name": "noticons",
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "Noticon — 39,000+ offline icons inside Notion's own page-icon menu.",
+  "description": "Noticons — 39,000+ offline icons inside Notion's own page-icon menu.",
   "license": "MIT",
   "homepage": "https://github.com/arhunsaday/notion-more-icons",
   "repository": {

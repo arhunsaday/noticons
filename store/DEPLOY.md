@@ -1,4 +1,4 @@
-# Deploying Noticon to the Chrome Web Store and Firefox Add-ons
+# Deploying Noticons to the Chrome Web Store and Firefox Add-ons
 
 The pipeline in `.github/workflows/release.yml` publishes to both stores when
 you push a version tag. It can only do that once the two store accounts exist
@@ -29,10 +29,10 @@ Both stores need a first submission through their web UI, because that is what
 creates the listing the API then updates.
 
 1. `npm run verify && npm run package`
-2. Upload `releases/noticon-chrome-v1.0.0.zip` at
+2. Upload `releases/noticons-chrome-v1.0.0.zip` at
    <https://chrome.google.com/webstore/devconsole>, fill the listing from
    [listing.md](listing.md), submit for review.
-3. Upload `releases/noticon-firefox-v1.0.0.zip` at
+3. Upload `releases/noticons-firefox-v1.0.0.zip` at
    <https://addons.mozilla.org/developers/addon/submit/distribution>, choose
    **On this site**, fill the listing, submit.
 4. Copy the Chrome item ID into `CWS_EXTENSION_ID`.

@@ -1,4 +1,4 @@
-# Manual smoke test — Noticon
+# Manual smoke test — Noticons
 
 Run before every store submission, on a **real, logged-in Notion page**, in a
 clean profile with the unpacked build loaded. Unit tests cover detection,

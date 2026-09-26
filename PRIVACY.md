@@ -1,8 +1,8 @@
-# Privacy policy — Noticon
+# Privacy policy — Noticons
 
 *Last updated: 2026-09-23*
 
-**Noticon collects nothing.** No analytics, no telemetry, no external requests,
+**Noticons collects nothing.** No analytics, no telemetry, no external requests,
 no accounts, no identifiers. There is no server; there is nothing to collect it
 with.
 

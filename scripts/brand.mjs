@@ -5,7 +5,7 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import { createCanvas, encodePng } from './raster.mjs';
 
 export const BRAND = {
-  name: 'Noticon',
+  name: 'Noticons',
   tagline: 'More icons for Notion',
   ink: '#1F1F1E',       // tile background, matches Notion's dark surface family
   accent: '#2383E2',    // Notion's own blue, so the mark sits inside the product

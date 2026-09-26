@@ -71,7 +71,7 @@ jobs:
           CLIENT_ID: ${{ secrets.CWS_CLIENT_ID }}
           CLIENT_SECRET: ${{ secrets.CWS_CLIENT_SECRET }}
           REFRESH_TOKEN: ${{ secrets.CWS_REFRESH_TOKEN }}
-        run: npx --yes chrome-webstore-upload-cli@3 upload --source releases/noticon-chrome-v*.zip --auto-publish
+        run: npx --yes chrome-webstore-upload-cli@3 upload --source releases/noticons-chrome-v*.zip --auto-publish
 
       - name: Submit to Firefox Add-ons
         if: env.AMO_JWT_ISSUER != '' && env.DRY_RUN != 'true'
@@ -94,11 +94,11 @@ jobs:
           files: releases/*
           generate_release_notes: true
           body: |
-            Install from the [Chrome Web Store](https://chrome.google.com/webstore/detail/${{ secrets.CWS_EXTENSION_ID }}) or [Firefox Add-ons](https://addons.mozilla.org/addon/noticon/).
+            Install from the [Chrome Web Store](https://chrome.google.com/webstore/detail/${{ secrets.CWS_EXTENSION_ID }}) or [Firefox Add-ons](https://addons.mozilla.org/addon/noticons/).
 
             The attached archives are the exact packages submitted to both stores.
 
       - uses: actions/upload-artifact@v4
         with:
-          name: noticon-releases
+          name: noticons-releases
           path: releases

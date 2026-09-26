@@ -61,7 +61,7 @@ document.querySelectorAll('.tabs button').forEach(b => b.addEventListener('click
     pageIcon.replaceChildren(img);
     popup.hidden = true;
     // Simulates Notion unmounting its overlay after a successful upload.
-    popup.querySelector('[data-noticon="panel"]')?.remove();
+    popup.querySelector('[data-noticons="panel"]')?.remove();
   });
   content.append(text, input);
 }));

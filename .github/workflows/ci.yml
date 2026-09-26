@@ -43,12 +43,12 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: noticon-chrome
+          name: noticons-chrome
           path: dist
           retention-days: 14
 
       - uses: actions/upload-artifact@v4
         with:
-          name: noticon-firefox
+          name: noticons-firefox
           path: dist-firefox
           retention-days: 14

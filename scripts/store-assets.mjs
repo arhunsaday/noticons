@@ -34,7 +34,7 @@ for (const tile of TILES) {
   const url = `file://${resolve('store/promo.html')}?only=${tile.id}`;
   // A fresh profile per capture: Chrome holds a lock on the directory briefly
   // after exit, and the second run hangs waiting for it.
-  const profile = resolve(tmpdir(), `noticon-shot-${process.pid}-${tile.id}`);
+  const profile = resolve(tmpdir(), `noticons-shot-${process.pid}-${tile.id}`);
   const out = resolve('brand/store', tile.name);
   rmSync(out, { force: true });
   try {

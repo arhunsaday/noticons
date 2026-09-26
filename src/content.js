@@ -92,14 +92,14 @@ function scan() {
   scanScheduled = false;
   if (picker && !picker.host.isConnected) picker.close();
   const popup = findIconPopup();
-  if (!popup || popup.tabs.querySelector('[data-noticon="tab"]')) return;
+  if (!popup || popup.tabs.querySelector('[data-noticons="tab"]')) return;
 
   injected = document.createElement('button');
   injected.type = 'button';
   injected.textContent = 'More icons';
-  injected.dataset.noticon = 'tab';
+  injected.dataset.noticons = 'tab';
   injected.setAttribute('aria-haspopup', 'dialog');
-  injected.title = 'Noticon — thousands more page icons (Alt+Shift+I)';
+  injected.title = 'Noticons — thousands more page icons (Alt+Shift+I)';
 
   indicator = document.createElement('span');
   indicator.setAttribute('aria-hidden', 'true');

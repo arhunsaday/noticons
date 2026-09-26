@@ -1,4 +1,4 @@
-# Store listing copy — Noticon
+# Store listing copy — Noticons
 
 Source of truth for both store listings. Keep in step with `README.md`,
 `PRIVACY.md` and `extension/manifest.json`.
@@ -7,9 +7,9 @@ Source of truth for both store listings. Keep in step with `README.md`,
 
 ## Name
 
-**Noticon — more icons for Notion** (31 characters; Chrome allows 75, AMO 50)
+**Noticons — more icons for Notion** (32 characters; Chrome allows 75, AMO 50)
 
-Short name: `Noticon`
+Short name: `Noticons`
 
 ## Summary / short description
 
@@ -24,7 +24,7 @@ Short name: `Noticon`
 
 ## Full description
 
-Notion gives you emoji and a small icon set. Noticon adds 39,819 more, in the
+Notion gives you emoji and a small icon set. Noticons adds 39,819 more, in the
 same place you already look for them.
 
 Click a page icon, choose **More icons**, and search. Click once — the icon is
@@ -59,7 +59,7 @@ WHAT YOU GET
 
 HOW IT FITS IN
 
-Noticon is not a separate window. It adds one tab beside Emojis, Icons and
+Noticons is not a separate window. It adds one tab beside Emojis, Icons and
 Custom, styled from Notion's own controls, and the panel opens underneath them
 at the same width. The icon you choose is rasterised and handed to Notion's
 normal image upload, which means the icon lives in your workspace: it keeps
@@ -122,16 +122,21 @@ Privacy policy URL: `https://github.com/arhunsaday/notion-more-icons/blob/main/P
 
 `browser_specific_settings.gecko.data_collection_permissions.required` is
 `["none"]`, which is what AMO now requires an add-on to declare explicitly.
-Add-on ID: `noticon@arhunsaday.github.io`.
+Add-on ID: `noticons@arhunsaday.github.io`.
 
 ## Assets
 
 | Asset | Size | Where it comes from |
 | --- | --- | --- |
 | Store icon | 128 × 128 PNG | `extension/icons/icon-128.png` — `npm run brand` ✅ committed |
-| Small promo tile | 440 × 280 PNG | `brand/store/promo-440x280.png` — `node scripts/store-assets.mjs` ✅ committed |
-| Marquee promo tile | 1400 × 560 PNG | `brand/store/marquee-1400x560.png` — same script. **Optional**: Chrome only uses it for featured placement |
+| Small promo tile | 440 × 280 PNG | `brand/store/promo-440x280.png` — `node scripts/store-assets.mjs` ⚠️ **stale** |
+| Marquee promo tile | 1400 × 560 PNG | `brand/store/marquee-1400x560.png` — same script. ⚠️ **stale**. **Optional**: Chrome only uses it for featured placement |
 | Screenshots | 1280 × 800 PNG, at least one, up to five | **Capture by hand** on a real Notion page |
+
+Both promo tiles still read "Noticon" and "27,778 icons". They render live text, so
+they have to be re-captured on a machine with the project's own fonts — the tiles
+committed here came from one, and a headless browser without those fonts produces a
+visibly different tile. Run `node scripts/store-assets.mjs` before submitting.
 
 Suggested screenshots, in order:
 

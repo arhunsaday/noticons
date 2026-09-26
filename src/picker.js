@@ -80,7 +80,7 @@ const CATEGORIES = [
 
 export function openPicker({ popup, onClose }) {
   const host = el('div');
-  host.dataset.noticon = 'panel';
+  host.dataset.noticons = 'panel';
   const shadow = host.attachShadow({ mode: 'open' });
   const style = el('style');
   style.textContent = styles;
@@ -95,7 +95,7 @@ export function openPicker({ popup, onClose }) {
   let dark = isDark();
   panel.dataset.theme = dark ? 'dark' : 'light';
   panel.setAttribute('role', integrated ? 'region' : 'dialog');
-  panel.setAttribute('aria-label', 'Noticon icon library');
+  panel.setAttribute('aria-label', 'Noticons icon library');
   if (!integrated) panel.setAttribute('aria-modal', 'true');
   shadow.append(panel);
 
@@ -135,7 +135,7 @@ export function openPicker({ popup, onClose }) {
 
   function outside(e) {
     if (e.composedPath().includes(host)) return;
-    if (popup?.tabs.contains(e.target) && e.target.closest('[data-noticon="tab"]')) return;
+    if (popup?.tabs.contains(e.target) && e.target.closest('[data-noticons="tab"]')) return;
     close();
   }
 
@@ -176,7 +176,7 @@ export function openPicker({ popup, onClose }) {
   if (!integrated) {
     const top = el('header', 'top');
     const brand = el('div', 'brand');
-    brand.append(glyph('sparkle'), el('span', '', 'Noticon'));
+    brand.append(glyph('sparkle'), el('span', '', 'Noticons'));
     const x = button('close', close, 'Close icon library');
     x.append(glyph('close'));
     top.append(brand, x);

@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to Noticon. Format follows
+All notable changes to Noticons. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
@@ -30,6 +30,11 @@ All notable changes to Noticon. Format follows
 
 ### Changed
 
+- **Renamed from Noticon to Noticons**, everywhere it appears: the extension
+  name and short name, the injected tab's tooltip, the panel and popup
+  headings, the store listings, the release artefacts, and the Firefox add-on
+  id, which becomes `noticons@arhunsaday.github.io`. Nothing has been submitted
+  to either store yet, so no published identity moves with it.
 - The colour picker is labelled for what it actually repaints: line **and**
   duotone icons.
 - The category row wraps instead of scrolling sideways with a hidden scrollbar,

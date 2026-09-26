@@ -1,13 +1,13 @@
 <div align="center">
   <img src="brand/logo.svg" width="72" height="72" alt="">
-  <h1>Noticon</h1>
+  <h1>Noticons</h1>
   <p><strong>39,819 icons, inside Notion's own page-icon menu.</strong><br>
   Offline. No account. No tracking.</p>
 </div>
 
 ---
 
-Noticon adds a **More icons** tab next to Notion’s Emojis / Icons / Upload tabs.
+Noticons adds a **More icons** tab next to Notion’s Emojis / Icons / Upload tabs.
 Search 39,819 icons across 18 collections, tint the line and duotone ones with
 Notion's own colour palette, and click once to apply.
 
@@ -101,7 +101,7 @@ npm test            # 31 tests: detection, upload outcomes, search, sanitisation
 npm run brand       # regenerate icons from scripts/brand.mjs — output is committed
 npm run build       # dist/ (Chromium) and dist-firefox/
 npm run dev         # build, then serve the integration fixture on :4173
-npm run package     # releases/noticon-{chrome,firefox}-v<version>.zip
+npm run package     # releases/noticons-{chrome,firefox}-v<version>.zip
 npm run verify      # brand + test + build, the same gate CI runs
 ```
 
@@ -142,6 +142,6 @@ MIT — see [LICENSE](LICENSE). Bundled icon sets keep their own licences; see
 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md), and the per-set notices in
 `notices/`, which ship inside the package.
 
-Noticon is an independent project. It is **not affiliated with, endorsed by, or
+Noticons is an independent project. It is **not affiliated with, endorsed by, or
 sponsored by Notion Labs, Inc.** "Notion" is their trademark, used here only to
 describe what this extension works with.

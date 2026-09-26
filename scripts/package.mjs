@@ -10,7 +10,7 @@ const files = ['manifest.json', 'background.js', 'content.js', 'catalog.json', '
 await mkdir('releases', { recursive: true });
 
 for (const [folder, browser, ext] of [['dist', 'chrome', 'zip'], ['dist-firefox', 'firefox', 'zip']]) {
-  const name = `noticon-${browser}-v${pkg.version}.${ext}`;
+  const name = `noticons-${browser}-v${pkg.version}.${ext}`;
   const target = resolve('releases', name);
   await rm(target, { force: true });
   execFileSync('zip', ['-q', '-r', '-X', target, ...files], { cwd: folder });
