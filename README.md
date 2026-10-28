@@ -5,6 +5,8 @@
   Offline. No account. No tracking.</p>
 </div>
 
+<p align="center"><img src="docs/screenshot.png" alt="The More icons tab inside Notion's page-icon menu, showing search, filters and a grid of colour icons" width="800"></p>
+
 ---
 
 Noticons adds a **More icons** tab next to Notion’s Emojis / Icons / Upload tabs.
